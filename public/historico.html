@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histórico</title>
+
+<link rel="stylesheet" href="css/sidebar.css">
+
+<style>
+
+table{
+width:100%;
+background:#0f1a2e;
+border-collapse:collapse;
+color:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 16px 34px rgba(0,0,0,0.22);
+border:1px solid rgba(255,255,255,0.06);
+}
+
+th,td{
+padding:14px 12px;
+border-bottom:1px solid rgba(255,255,255,0.06);
+color:#e5eefc;
+}
+
+th{
+background:#14233d;
+color:#b9cae4;
+text-transform:uppercase;
+font-size:12px;
+letter-spacing:.5px;
+}
+
+.btn-ver,
+.btn-download,
+.btn-excluir{
+border:none;
+padding:8px 14px;
+color:white;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+}
+
+.btn-ver{
+background:#166534;
+margin-right:6px;
+}
+
+.btn-download{
+background:#2563eb;
+margin-right:6px;
+}
+
+.btn-excluir{
+background:#dc2626;
+}
+
+.page-title{
+margin:0 0 20px 0;
+font-size:32px;
+font-weight:700;
+letter-spacing:-0.8px;
+}
+
+.vazio{
+background:#0f1a2e;
+padding:18px;
+border-radius:16px;
+color:#c7d6ee;
+border:1px solid rgba(255,255,255,0.06);
+box-shadow:0 16px 34px rgba(0,0,0,0.22);
+}
+
+.acoes-doc{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+}
+
+.modal-overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.65);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+padding:20px;
+}
+
+.modal-overlay.active{
+display:flex;
+}
+
+.modal-box{
+width:min(1100px, 100%);
+height:min(90vh, 900px);
+background:#0f1a2e;
+border-radius:18px;
+box-shadow:0 20px 60px rgba(0,0,0,0.35);
+border:1px solid rgba(255,255,255,0.08);
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+padding:16px 18px;
+background:#14233d;
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.modal-title{
+font-size:18px;
+font-weight:700;
+color:#ffffff;
+}
+
+.modal-actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+}
+
+.modal-close{
+border:none;
+background:#334155;
+color:#fff;
+padding:10px 14px;
+border-radius:10px;
+cursor:pointer;
+font-weight:700;
+}
+
+.modal-frame-wrap{
+flex:1;
+background:#0b1527;
+position:relative;
+}
+
+.modal-frame{
+width:100%;
+height:100%;
+border:none;
+background:#fff;
+}
+
+.modal-mobile-box{
+display:none;
+width:100%;
+height:100%;
+background:#fff;
+padding:18px;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+text-align:center;
+gap:14px;
+}
+
+.modal-mobile-box strong{
+color:#0f172a;
+font-size:16px;
+}
+
+.modal-mobile-box p{
+margin:0;
+color:#64748b;
+font-size:14px;
+line-height:1.5;
+max-width:420px;
+}
+
+.modal-mobile-link{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+background:#2563eb;
+color:#fff;
+text-decoration:none;
+border-radius:10px;
+padding:12px 16px;
+font-size:14px;
+font-weight:700;
+}
+
+.modal-open-mobile{
+display:none;
+border:none;
+background:#2563eb;
+color:#fff;
+padding:10px 14px;
+border-radius:10px;
+cursor:pointer;
+font-weight:700;
+text-decoration:none;
+}
+
+@media (max-width: 768px){
+  .acoes-doc{
+    flex-direction:column;
+  }
+
+  .btn-ver,
+  .btn-download,
+  .btn-excluir{
+    width:100%;
+    margin-right:0;
+  }
+
+  .modal-box{
+    height:92vh;
+  }
+
+  .modal-header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .modal-actions{
+    width:100%;
+  }
+
+  .modal-actions button,
+  .modal-actions a{
+    width:100%;
+  }
+
+  .modal-frame{
+    display:none;
+  }
+
+  .modal-mobile-box{
+    display:flex;
+  }
+
+  .modal-open-mobile{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+
+<h2>CentralGalva</h2>
+
+<div class="saldo-box">
+<div class="saldo-label">Saldo disponível</div>
+<div class="saldo-value" id="saldoSidebar">R$ 0,00</div>
+</div>
+
+<div class="nav-list">
+
+<a class="nav-link" href="dashboard.html">Dashboard</a>
+
+<button class="nav-btn" onclick="toggleSubmenu('submenuApps')">
+<span>Aplicativos</span>
+<span class="nav-arrow">></span>
+</button>
+
+<div class="submenu" id="submenuApps">
+<a href="cnh-digital.html">CNH DIGITAL</a>
+<a href="historico-cnh.html">CNH’s Salvas</a>
+
+<a href="rg-digital.html">RG DIGITAL</a>
+<a href="historico-rg.html">RG’s Salvos</a>
+</div>
+
+<button class="nav-btn" onclick="toggleSubmenu('submenuEditaveis')">
+<span>Editáveis</span>
+<span class="nav-arrow">></span>
+</button>
+
+<div class="submenu open" id="submenuEditaveis">
+<a href="atestado.html">ATESTADO</a>
+<a href="historico.html">Atestados Salvos</a>
+
+<a href="receita.html">RECEITA</a>
+<a href="historico-receita.html">Receitas Salvas</a>
+
+<a href="toxicologico.html">TOXICOLÓGICO</a>
+<a href="historico-toxicologico.html">Toxicológicos Salvos</a>
+
+<a href="certificado.html">CERTIFICADO</a>
+<a href="historico-certificado.html">Certificados Salvos</a>
+
+<a href="historico-escolar.html">HISTÓRICO ESCOLAR</a>
+<a href="historico-historico-escolar.html">Históricos Salvos</a>
+
+<a href="crlv.html">CRLV (com qr-code)</a>
+<a href="historico-crlv.html">CRLV Salvos</a>
+</div>
+
+<a class="nav-link" href="loja.html">Loja</a>
+<a class="nav-link" href="recarga.html">Recarga</a>
+<a class="nav-link" href="#" onclick="logout()">Sair</a>
+
+</div>
+
+</div>
+
+<div class="content">
+
+<h1 class="page-title">Histórico de Documentos</h1>
+
+<div id="estadoVazio" class="vazio" style="display:none; margin-bottom:16px;">
+Nenhum documento encontrado para este usuário.
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Paciente</th>
+<th>Usuário</th>
+<th>Data</th>
+<th>Documento</th>
+</tr>
+
+</thead>
+
+<tbody id="listaDocs">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div id="modalPdf" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTituloPdf">Visualizar atestado</div>
+
+      <div class="modal-actions">
+        <a id="btnBaixarModal" href="#" download>
+          <button class="btn-download" type="button">Baixar PDF</button>
+        </a>
+        <a id="btnAbrirMobileModal" class="modal-open-mobile" href="#" target="_blank" rel="noopener noreferrer">Abrir PDF</a>
+        <button class="modal-close" type="button" onclick="fecharModalPdf()">Fechar</button>
+      </div>
+    </div>
+
+    <div class="modal-frame-wrap">
+      <iframe id="iframePdf" class="modal-frame" src=""></iframe>
+
+      <div class="modal-mobile-box" id="modalMobileBox">
+        <strong>Preview no celular</strong>
+        <p>Em alguns celulares o PDF não aparece dentro do modal. Toque no botão abaixo para abrir o arquivo diretamente.</p>
+        <a id="btnAbrirPdfDireto" class="modal-mobile-link" href="#" target="_blank" rel="noopener noreferrer">Abrir PDF em nova aba</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/sidebar.js"></script>
+
+<script>
+function formatarSaldo(valor){
+  return "R$ " + Number(valor || 0).toFixed(2).replace(".", ",")
+}
+
+function getUsuarioHistorico(){
+  try{
+    const usuario = JSON.parse(localStorage.getItem("usuario"))
+    if(usuario && typeof usuario === "object"){
+      return usuario
+    }
+    return null
+  }catch(e){
+    return null
+  }
+}
+
+function getTokenHistorico(){
+  const usuario = getUsuarioHistorico()
+
+  if(usuario && usuario.token){
+    return String(usuario.token).trim()
+  }
+
+  return localStorage.getItem("usuarioToken") || ""
+}
+
+function limparSessaoHistorico(){
+  localStorage.removeItem("usuario")
+  localStorage.removeItem("usuarioLogado")
+  localStorage.removeItem("usuarioToken")
+}
+
+function getHeadersHistorico(extra = {}){
+  const token = getTokenHistorico()
+
+  return {
+    ...(token ? { Authorization: "Bearer " + token } : {}),
+    ...extra
+  }
+}
+
+async function tratarRespostaHistorico(res){
+  let data = {}
+
+  try{
+    data = await res.json()
+  }catch(error){
+    data = {}
+  }
+
+  if(res.status === 401){
+    limparSessaoHistorico()
+    alert(data.erro || "Sessão expirada. Faça login novamente.")
+    window.location = "login.html"
+    throw new Error(data.erro || "Sessão expirada")
+  }
+
+  if(res.status === 403){
+    alert(data.erro || "Acesso não autorizado")
+    throw new Error(data.erro || "Acesso não autorizado")
+  }
+
+  if(!res.ok){
+    throw new Error(data.erro || "Erro na requisição")
+  }
+
+  return data
+}
+
+async function logout(){
+  try{
+    const token = getTokenHistorico()
+
+    if(token){
+      await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+    }
+  }catch(error){
+    console.error("Erro ao finalizar sessão:", error)
+  }
+
+  limparSessaoHistorico()
+  window.location = "login.html"
+}
+
+function isMobilePdf(){
+  return window.innerWidth <= 768
+}
+
+function abrirModalPdf(nomeArquivo, nomePaciente){
+  const modal = document.getElementById("modalPdf")
+  const iframe = document.getElementById("iframePdf")
+  const titulo = document.getElementById("modalTituloPdf")
+  const btnBaixar = document.getElementById("btnBaixarModal")
+  const btnAbrirMobileModal = document.getElementById("btnAbrirMobileModal")
+  const btnAbrirPdfDireto = document.getElementById("btnAbrirPdfDireto")
+
+  const urlPdf = "/docs/" + encodeURIComponent(nomeArquivo)
+
+  if(titulo){
+    titulo.innerText = "Visualizar atestado - " + (nomePaciente || "Documento")
+  }
+
+  if(btnBaixar){
+    btnBaixar.href = urlPdf
+  }
+
+  if(btnAbrirMobileModal){
+    btnAbrirMobileModal.href = urlPdf
+  }
+
+  if(btnAbrirPdfDireto){
+    btnAbrirPdfDireto.href = urlPdf
+  }
+
+  if(iframe){
+    if(isMobilePdf()){
+      iframe.src = ""
+    }else{
+      iframe.src = urlPdf
+    }
+  }
+
+  if(modal){
+    modal.classList.add("active")
+  }
+}
+
+function fecharModalPdf(){
+  const modal = document.getElementById("modalPdf")
+  const iframe = document.getElementById("iframePdf")
+  const btnBaixar = document.getElementById("btnBaixarModal")
+  const btnAbrirMobileModal = document.getElementById("btnAbrirMobileModal")
+  const btnAbrirPdfDireto = document.getElementById("btnAbrirPdfDireto")
+
+  if(iframe){
+    iframe.src = ""
+  }
+
+  if(btnBaixar){
+    btnBaixar.href = "#"
+  }
+
+  if(btnAbrirMobileModal){
+    btnAbrirMobileModal.href = "#"
+  }
+
+  if(btnAbrirPdfDireto){
+    btnAbrirPdfDireto.href = "#"
+  }
+
+  if(modal){
+    modal.classList.remove("active")
+  }
+}
+
+window.addEventListener("click", function(event){
+  const modal = document.getElementById("modalPdf")
+  if(event.target === modal){
+    fecharModalPdf()
+  }
+})
+
+window.addEventListener("keydown", function(event){
+  if(event.key === "Escape"){
+    fecharModalPdf()
+  }
+})
+
+async function carregarUsuarioTela(){
+  let usuarioSalvo = getUsuarioHistorico()
+  let nomeUsuario = ""
+
+  if(usuarioSalvo && usuarioSalvo.usuario){
+    nomeUsuario = usuarioSalvo.usuario
+  }
+
+  if(!nomeUsuario){
+    nomeUsuario = localStorage.getItem("usuarioLogado") || ""
+  }
+
+  const token = getTokenHistorico()
+
+  if(!nomeUsuario || !token){
+    limparSessaoHistorico()
+    window.location = "login.html"
+    return null
+  }
+
+  try{
+    const res = await fetch("/api/usuario/" + encodeURIComponent(nomeUsuario), {
+      headers: getHeadersHistorico({
+        "Accept": "application/json"
+      })
+    })
+
+    const user = await tratarRespostaHistorico(res)
+
+    localStorage.setItem("usuario", JSON.stringify({
+      ...(usuarioSalvo || {}),
+      ...user,
+      token: token
+    }))
+    localStorage.setItem("usuarioLogado", user.usuario || nomeUsuario)
+    localStorage.setItem("usuarioToken", token)
+
+    const saldoSidebar = document.getElementById("saldoSidebar")
+    if(saldoSidebar){
+      saldoSidebar.innerText = formatarSaldo(user.saldo || 0)
+    }
+
+    return {
+      ...user,
+      token
+    }
+  }catch(error){
+    console.error("Erro ao carregar usuário:", error)
+  }
+
+  if(usuarioSalvo){
+    const saldoSidebar = document.getElementById("saldoSidebar")
+    if(saldoSidebar){
+      saldoSidebar.innerText = formatarSaldo(usuarioSalvo.saldo || 0)
+    }
+    return usuarioSalvo
+  }
+
+  return null
+}
+
+function formatarDataDocumento(valor){
+  if(!valor) return "-"
+
+  let dataObj = new Date(valor)
+  if(!isNaN(dataObj.getTime())){
+    return dataObj.toLocaleDateString() + " " + dataObj.toLocaleTimeString()
+  }
+
+  return valor
+}
+
+function montarLinhaDocumento(d){
+  const nomePaciente =
+    d?.valores?.nome ||
+    d?.nome ||
+    d?.valores?.nome_paciente ||
+    "-"
+
+  const nomeArquivo = d?.arquivo || ""
+  const dataFormatada = formatarDataDocumento(d?.data)
+
+  return `
+    <tr>
+      <td>${nomePaciente}</td>
+      <td>${d.usuario || "-"}</td>
+      <td>${dataFormatada}</td>
+      <td>
+        <div class="acoes-doc">
+          <button class="btn-ver" type="button" onclick="abrirModalPdf('${String(nomeArquivo).replace(/'/g, "\\'")}', '${String(nomePaciente).replace(/'/g, "\\'")}')">
+            Ver
+          </button>
+
+          <a href="/docs/${encodeURIComponent(nomeArquivo)}" download>
+            <button class="btn-download" type="button">Baixar</button>
+          </a>
+
+          <button class="btn-excluir" type="button" onclick="excluirDocumento('${String(d.id || "").replace(/'/g, "\\'")}')">
+            Excluir
+          </button>
+        </div>
+      </td>
+    </tr>
+  `
+}
+
+async function excluirDocumento(id){
+  if(!id){
+    alert("Documento inválido")
+    return
+  }
+
+  const confirmar = confirm("Deseja excluir este atestado?")
+  if(!confirmar) return
+
+  try{
+    const res = await fetch("/api/documentos/excluir", {
+      method: "POST",
+      headers: getHeadersHistorico({
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }),
+      body: JSON.stringify({ id })
+    })
+
+    const resp = await tratarRespostaHistorico(res)
+
+    if(resp.ok){
+      alert("Documento excluído com sucesso")
+      await carregarHistorico()
+      return
+    }
+
+    alert(resp.erro || "Erro ao excluir documento")
+  }catch(error){
+    console.error(error)
+    alert(error.message || "Erro ao excluir documento")
+  }
+}
+
+async function carregarHistorico(){
+  const user = await carregarUsuarioTela()
+
+  if(!user || !user.usuario){
+    alert("Usuário não identificado")
+    window.location = "login.html"
+    return
+  }
+
+  try{
+    let res = await fetch("/api/documentos?usuario=" + encodeURIComponent(user.usuario), {
+      headers: getHeadersHistorico({
+        "Accept": "application/json"
+      })
+    })
+
+    let docs = await tratarRespostaHistorico(res)
+
+    let tabela = document.getElementById("listaDocs")
+    let estadoVazio = document.getElementById("estadoVazio")
+
+    tabela.innerHTML = ""
+
+    if(!Array.isArray(docs) || docs.length === 0){
+      estadoVazio.style.display = "block"
+      return
+    }
+
+    estadoVazio.style.display = "none"
+
+    docs.slice().reverse().forEach(d => {
+      tabela.innerHTML += montarLinhaDocumento(d)
+    })
+  }catch(error){
+    console.error(error)
+    alert("Erro ao carregar histórico")
+  }
+}
+
+carregarHistorico()
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CentralGalva</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <div class="login-container">
+
+    <div class="login-box">
+
+      <div class="login-logo">CG</div>
+
+      <h1>CentralGalva</h1>
+      <p class="login-subtitle">Acesse sua conta para continuar</p>
+
+      <div id="login">
+        <input id="emailLogin" placeholder="Usuário">
+        <input id="senhaLogin" type="password" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+        <p class="login-switch" onclick="mostrarCadastro()">Criar conta</p>
+      </div>
+
+      <div id="cadastro" style="display:none">
+        <input id="emailCadastro" placeholder="Usuário">
+        <input id="senhaCadastro" type="password" placeholder="Senha">
+
+        <button onclick="cadastro()">Cadastrar</button>
+
+        <a
+          href="https://wa.me/5511964489240?text=Ol%C3%A1%2C%20acabei%20de%20me%20cadastrar%20na%20CentralGalva%20e%20quero%20solicitar%20a%20ativa%C3%A7%C3%A3o%20da%20minha%20conta."
+          target="_blank"
+          style="
+            display:block;
+            width:100%;
+            margin-top:12px;
+            padding:14px 16px;
+            border-radius:14px;
+            text-align:center;
+            text-decoration:none;
+            font-weight:700;
+            background:#25d366;
+            color:#fff;
+            box-sizing:border-box;
+          "
+        >
+          Chamar no WhatsApp
+        </a>
+
+        <p style="margin-top:12px;color:#94a3b8;font-size:13px;text-align:center;">
+          Após o cadastro, sua conta ficará aguardando ativação pelo administrador.
+        </p>
+
+        <p class="login-switch" onclick="mostrarLogin()">Voltar</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="js/script.js"></script>
+
+</body>
+</html>

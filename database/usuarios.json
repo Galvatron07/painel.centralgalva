@@ -1,0 +1,26 @@
+[
+  {
+    "usuario": "Galvatron",
+    "senha": "612152",
+    "saldo": 24913,
+    "ativo": true,
+    "documentos": 57
+  },
+  {
+    "usuario": "Otto",
+    "senha": "612152",
+    "saldo": 370,
+    "documentos": 0,
+    "recargaTotal": 0,
+    "ativo": true
+  },
+  {
+    "usuario": "severo7",
+    "senha": "6121",
+    "saldo": 0,
+    "documentos": 0,
+    "recargaTotal": 0,
+    "ativo": true,
+    "criadoEm": "2026-03-23T19:13:40.841Z"
+  }
+]

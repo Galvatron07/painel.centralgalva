@@ -1,0 +1,35 @@
+[
+  {
+    "id": "sessao_1775244845297_62128",
+    "token": "0e71904689d91308c8e995c9d3b722aff2236f72bf0611737bffc5e6e4bee395",
+    "tipo": "admin",
+    "usuario": null,
+    "email": "admin@admin.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+    "criadoEm": "2026-04-03T19:34:05.295Z",
+    "expiraEm": "2026-04-04T19:34:05.295Z"
+  },
+  {
+    "id": "sessao_1775245769771_52914",
+    "token": "cf07c61817be9a7c90e967a93920d548052b76d9acdff61f0495ef6440a90b0a",
+    "tipo": "usuario",
+    "usuario": "Galvatron",
+    "email": "Galvatron",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+    "criadoEm": "2026-04-03T19:49:29.769Z",
+    "expiraEm": "2026-04-04T19:49:29.769Z"
+  },
+  {
+    "id": "sessao_1775253137987_69979",
+    "token": "74a29480e56ed76849b4b08697679b5b9d236e516d44c917a889b426d5d3555e",
+    "tipo": "usuario",
+    "usuario": "Galvatron",
+    "email": "Galvatron",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+    "criadoEm": "2026-04-03T21:52:17.986Z",
+    "expiraEm": "2026-04-04T21:52:17.986Z"
+  }
+]

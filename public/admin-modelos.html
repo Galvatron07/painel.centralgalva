@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modelos Editáveis</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .page-header h2 {
+    margin: 0;
+    color: #0f172a;
+  }
+
+  .page-header p {
+    margin: 6px 0 0;
+    color: #64748b;
+  }
+
+  .toolbar {
+    background: #fff;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    display: grid;
+    grid-template-columns: 1.6fr 1fr auto;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .toolbar input,
+  .toolbar select,
+  .toolbar button,
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    background: #fff;
+    color: #0f172a;
+  }
+
+  .toolbar button,
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-success,
+  .btn-dark,
+  .btn-minimizar {
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+
+  .toolbar button,
+  .btn-primary {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+  }
+
+  .btn-secondary,
+  .btn-minimizar {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: #fff;
+  }
+
+  .btn-success {
+    background: #16a34a;
+    color: #fff;
+  }
+
+  .btn-dark {
+    background: #0f172a;
+    color: #fff;
+  }
+
+  .toolbar button:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .btn-danger:hover,
+  .btn-success:hover,
+  .btn-dark:hover,
+  .btn-minimizar:hover {
+    transform: translateY(-1px);
+    opacity: 0.96;
+  }
+
+  .models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+  }
+
+  .model-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .model-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .model-card h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 18px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .badge-group {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .badge-active {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .badge-inactive {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .model-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  .model-info .info-box {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .model-info .info-box span {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 5px;
+  }
+
+  .model-info .info-box strong {
+    color: #0f172a;
+    font-size: 14px;
+  }
+
+  .model-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .model-actions button {
+    flex: 1;
+    min-width: 110px;
+    border-radius: 12px;
+    padding: 10px 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .empty-state {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    padding: 30px;
+    text-align: center;
+    color: #64748b;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-content {
+    width: min(1500px, 100%);
+    max-height: 95vh;
+    overflow-y: auto;
+    background: #f8fafc;
+    border-radius: 22px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+    padding: 22px;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    color: #0f172a;
+  }
+
+  .close-modal {
+    width: auto !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+    border: none !important;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .form-section {
+    background: #fff;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+  }
+
+  .form-section h4 {
+    margin: 0 0 14px;
+    color: #0f172a;
+  }
+
+  .form-section label,
+  .field-block label,
+  .doctor-block label,
+  .grid-2 label,
+  .grid-3 label,
+  .grid-4 label,
+  .grid-5 label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827 !important;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .grid-5 {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+
+  .editor-layout {
+    display: grid;
+    grid-template-columns: 1.18fr 0.82fr;
+    gap: 18px;
+    align-items: stretch;
+    min-height: 72vh;
+  }
+
+  .editor-left {
+    min-height: 0;
+    max-height: 72vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+  }
+
+  .editor-left::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .editor-left::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+  }
+
+  .editor-left::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .editor-right {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .field-block,
+  .doctor-block {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    transition: 0.2s;
+  }
+
+  .field-block.active-preview {
+    border: 2px solid #2563eb;
+    background: #eff6ff;
+  }
+
+  .field-block-top,
+  .doctor-block-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .field-block-top strong,
+  .doctor-block-top strong {
+    color: #0f172a;
+  }
+
+  .field-actions-top {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .field-help {
+    background: #eff6ff;
+    color: #1e3a8a;
+    border: 1px solid #bfdbfe;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .mini-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin: 16px 0 8px;
+  }
+
+  .field-body {
+    display: block;
+  }
+
+  .field-block.minimizado .field-body {
+    display: none;
+  }
+
+  .field-resumo {
+    display: none;
+    background: #ffffff;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .field-block.minimizado .field-resumo {
+    display: block;
+  }
+
+  .doctor-box-help {
+    background: #f8fafc;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #1f2937;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .doctor-box-help strong {
+    color: #0f172a;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .muted {
+    color: #64748b;
+    font-size: 13px;
+  }
+
+  .preview-panel {
+    background: #fff;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    padding: 16px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+    height: 100%;
+    min-height: 72vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .preview-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+
+  .preview-box {
+    position: relative;
+    width: 100%;
+    min-height: 980px;
+    flex: 1;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 18px;
+    overflow: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top center;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+  }
+
+  .preview-box.grade::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(37,99,235,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(37,99,235,0.08) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+
+  .preview-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #64748b;
+    padding: 30px;
+    font-size: 14px;
+  }
+
+  .preview-field {
+    position: absolute;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: move;
+    touch-action: none;
+    user-select: none;
+    white-space: nowrap;
+    text-shadow: 0 0 2px rgba(255,255,255,0.75);
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  .preview-field::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 1px;
+    background: rgba(37, 99, 235, 0.28);
+  }
+
+  .preview-field.selected {
+    color: #dc2626;
+    text-shadow: 0 0 2px rgba(255,255,255,0.9);
+  }
+
+  .preview-field.selected::after {
+    background: rgba(220, 38, 38, 0.55);
+    height: 2px;
+  }
+
+  .preview-field.dragging {
+    cursor: move;
+    opacity: 0.85;
+  }
+
+  .preview-legend {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+    flex-shrink: 0;
+  }
+
+  .preview-medico {
+    position: absolute;
+    pointer-events: none;
+    border: 1px dashed rgba(22, 163, 74, 0.7);
+    background: rgba(22, 163, 74, 0.06);
+    border-radius: 8px;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px;
+    box-sizing: border-box;
+  }
+
+  .file-picker-wrap {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .file-picker-wrap input[type="text"] {
+    flex: 1;
+  }
+
+  @media (max-width: 1180px) {
+    .editor-layout {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .editor-left {
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+    }
+
+    .editor-right {
+      display: block;
+    }
+
+    .preview-panel {
+      min-height: auto;
+      height: auto;
+    }
+  }
+
+  @media (max-width: 980px) {
+    .toolbar,
+    .grid-2,
+    .grid-3,
+    .grid-4,
+    .grid-5,
+    .model-info,
+    .preview-toolbar {
+      grid-template-columns: 1fr;
+    }
+
+    .model-actions {
+      flex-direction: column;
+    }
+
+    .modal-content {
+      padding: 16px;
+    }
+
+    .preview-box {
+      min-height: 720px;
+    }
+
+    .file-picker-wrap,
+    .field-actions-top {
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+
+<body onload="iniciarPaginaModelos()">
+  <div class="layout">
+
+    <div class="sidebar">
+      <h2>Painel ADM</h2>
+
+      <button onclick="window.location='admin-dashboard.html'">Dashboard</button>
+      <button onclick="window.location='admin-usuarios.html'">Ver Usuários</button>
+      <button onclick="window.location='admin-criar.html'">Criar Novo Usuário</button>
+      <button onclick="window.location='admin-modelos.html'">Modelos</button>
+      <button onclick="logoutAdmin()">Sair</button>
+    </div>
+
+    <div class="main">
+      <div class="page-header">
+        <div>
+          <h2>Modelos Editáveis</h2>
+          <p>
+            Gerencie os modelos de UPA, SUS, Hapvida, Unimed e Modelos Específicos,
+            incluindo PDF base, imagem de prévia, campos, médicos, carimbos e assinaturas.
+          </p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input
+          type="text"
+          id="filtroBuscaModelo"
+          placeholder="Buscar modelo pelo nome..."
+          oninput="filtrarModelos()"
+        />
+
+        <select id="filtroGrupoModelo" onchange="filtrarModelos()">
+          <option value="">Todos os grupos</option>
+          <option value="UPA">UPA</option>
+          <option value="SUS">SUS</option>
+          <option value="HAPVIDA">HAPVIDA</option>
+          <option value="UNIMED">UNIMED</option>
+          <option value="ESPECIFICO">ESPECIFICO</option>
+        </select>
+
+        <button onclick="abrirModalModelo()">Novo Modelo</button>
+      </div>
+
+      <div id="listaModelos" class="models-grid"></div>
+    </div>
+  </div>
+
+  <div id="modalModelo" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h3 id="tituloModalModelo">Novo Modelo</h3>
+          <div class="muted">
+            A prévia mostra o nome dos campos e também vai mostrar a área do médico/carimbo para facilitar o ajuste.
+          </div>
+        </div>
+        <button class="close-modal" onclick="fecharModalModelo()">Fechar</button>
+      </div>
+
+      <div class="form-section">
+        <h4>Dados principais</h4>
+
+        <div class="grid-3">
+          <input type="hidden" id="modeloId" />
+
+          <div>
+            <label>Nome do modelo</label>
+            <input type="text" id="modeloNome" placeholder="Ex: UPA Modelo 01" />
+          </div>
+
+          <div>
+            <label>Grupo destino</label>
+            <select id="modeloGrupo">
+              <option value="UPA">UPA</option>
+              <option value="SUS">SUS</option>
+              <option value="HAPVIDA">HAPVIDA</option>
+              <option value="UNIMED">UNIMED</option>
+              <option value="ESPECIFICO">ESPECIFICO</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Tipo do documento</label>
+            <input type="text" id="modeloTipo" placeholder="Ex: atestado" value="atestado" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>Estado</label>
+            <input type="text" id="modeloEstado" placeholder="Ex: São Paulo" />
+          </div>
+
+          <div>
+            <label>Cidade</label>
+            <input type="text" id="modeloCidade" placeholder="Ex: São Paulo" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>Arquivo base em PDF</label>
+            <div class="file-picker-wrap">
+              <input type="text" id="modeloArquivoBase" placeholder="./uploads/modelos/modelo.pdf" readonly />
+              <button type="button" class="btn-secondary" onclick="document.getElementById('inputPdfModelo').click()">
+                Selecionar PDF
+              </button>
+            </div>
+            <input
+              type="file"
+              id="inputPdfModelo"
+              accept=".pdf,application/pdf"
+              style="display:none;"
+              onchange="uploadPdfModelo(this)"
+            />
+          </div>
+
+          <div>
+            <label>Imagem de prévia do modelo</label>
+            <div class="file-picker-wrap">
+              <input type="text" id="modeloPreviewImagem" placeholder="./uploads/modelos/modelo-preview.png" readonly />
+              <button type="button" class="btn-secondary" onclick="document.getElementById('inputPreviewModelo').click()">
+                Selecionar imagem
+              </button>
+            </div>
+            <input
+              type="file"
+              id="inputPreviewModelo"
+              accept="image/png,image/jpeg,image/webp"
+              style="display:none;"
+              onchange="uploadPreviewModelo(this)"
+            />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>Descrição</label>
+            <textarea id="modeloDescricao" rows="4" placeholder="Descreva este modelo..."></textarea>
+          </div>
+
+          <div>
+            <div class="grid-2">
+              <div>
+                <label>Custo em créditos</label>
+                <input type="number" id="modeloCustoCreditos" placeholder="20" value="20" />
+              </div>
+
+              <div>
+                <label>Status</label>
+                <select id="modeloAtivo">
+                  <option value="true">Ativo</option>
+                  <option value="false">Inativo</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="muted" style="margin-top:10px;">
+              O PDF base será usado para gerar o documento. A imagem serve para a prévia e posicionamento visual dos campos.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <div class="editor-left">
+          <div class="form-section">
+            <div class="field-block-top">
+              <div>
+                <h4 style="margin:0;">Campos do modelo</h4>
+                <div class="muted">
+                  Os nomes das caixas agora ficam escuros para facilitar a leitura.
+                </div>
+              </div>
+
+              <button class="btn-primary" type="button" onclick="adicionarCampoModelo()">
+                Adicionar Campo
+              </button>
+            </div>
+
+            <div id="camposModeloContainer"></div>
+          </div>
+
+          <div class="form-section">
+            <div class="doctor-block-top">
+              <div>
+                <h4 style="margin:0;">Médicos do modelo</h4>
+                <div class="muted">Cadastre o médico, o carimbo PNG e a assinatura PNG do modelo.</div>
+              </div>
+
+              <button class="btn-primary" type="button" onclick="adicionarMedicoModelo()">
+                Adicionar Médico
+              </button>
+            </div>
+
+            <div class="doctor-box-help">
+              <strong>Importante:</strong> no próximo arquivo JS vamos ligar esta parte com a seleção do médico no formulário do usuário,
+              a visualização na prévia e o posicionamento do carimbo no PDF.
+            </div>
+
+            <div id="medicosModeloContainer"></div>
+          </div>
+        </div>
+
+        <div class="editor-right">
+          <div class="preview-panel">
+            <h4 style="margin-top:0;">Prévia visual do posicionamento</h4>
+
+            <div class="preview-toolbar">
+              <input type="text" id="previewEscalaInfo" value="Prévia visual da página" readonly />
+              <button type="button" class="btn-secondary" onclick="alternarGradePreview()">
+                Mostrar/Ocultar Grade
+              </button>
+              <button type="button" class="btn-primary" onclick="atualizarPreviewModelo()">
+                Atualizar Prévia
+              </button>
+            </div>
+
+            <div id="previewBox" class="preview-box grade">
+              <div id="previewPlaceholder" class="preview-placeholder">
+                Selecione uma imagem de prévia para visualizar os campos aqui.
+              </div>
+            </div>
+
+            <div class="preview-legend">
+              A prévia mostra o nome dos campos.<br>
+              No próximo passo ela também vai exibir a área do médico/carimbo para facilitar o ajuste do PNG.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" type="button" onclick="fecharModalModelo()">Cancelar</button>
+        <button class="btn-success" type="button" onclick="salvarModeloCompleto()">Salvar Modelo</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+  <script src="js/admin-modelos.js"></script>
+</body>
+
+</html>

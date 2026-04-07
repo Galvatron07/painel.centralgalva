@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emitir Atestado</title>
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'">
+  <link rel="stylesheet" href="css/sidebar.css">
+
+  <style>
+    .page-title {
+      margin: 0 0 8px 0;
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #ffffff;
+    }
+
+    .page-subtitle {
+      margin: 0 0 28px 0;
+      font-size: 15px;
+      color: #93c5fd;
+    }
+
+    .section-title {
+      margin: 0 0 14px 0;
+      font-size: 18px;
+      color: #dbeafe;
+      font-weight: 700;
+    }
+
+    .section-subtitle {
+      margin: 0 0 18px 0;
+      font-size: 13px;
+      color: #7dd3fc;
+    }
+
+    .hero-box {
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 30%),
+        linear-gradient(180deg, rgba(10, 23, 45, 0.98), rgba(6, 18, 37, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 26px;
+      padding: 28px;
+      box-shadow: 0 22px 44px rgba(0, 0, 0, 0.24);
+      margin-bottom: 24px;
+    }
+
+    .modelos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .modelo {
+      background: linear-gradient(180deg, rgba(18, 39, 68, 0.98), rgba(11, 24, 45, 0.98));
+      padding: 28px 18px;
+      border-radius: 22px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+      transition: .18s ease;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      font-weight: 800;
+      color: #fff;
+      min-height: 118px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      user-select: none;
+    }
+
+    .modelo .icone {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .modelo:hover {
+      background: linear-gradient(180deg, rgba(28, 57, 97, 0.98), rgba(16, 35, 63, 0.98));
+      transform: translateY(-3px);
+      box-shadow: 0 20px 42px rgba(0, 0, 0, 0.28);
+    }
+
+    .modelo.ativo {
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.25), 0 18px 40px rgba(0, 0, 0, 0.26);
+      background: linear-gradient(180deg, rgba(24, 61, 104, 0.98), rgba(12, 29, 53, 0.98));
+    }
+
+    .painel-box {
+      display: none;
+      margin-top: 24px;
+      background: linear-gradient(180deg, rgba(20, 40, 66, 0.98), rgba(14, 25, 45, 0.98));
+      padding: 24px;
+      border-radius: 22px;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .painel-box.show {
+      display: block;
+    }
+
+    .filtros-modelos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .filtro-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filtro-box label {
+      color: #dbeafe;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .filtro-box select {
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 14px;
+      box-sizing: border-box;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.98);
+      color: #0f172a;
+      outline: none;
+    }
+
+    .modelos-cadastrados {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+    }
+
+    .modelo-cadastrado {
+      background: linear-gradient(180deg, rgba(14, 33, 56, 0.98), rgba(10, 22, 40, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      padding: 18px;
+      cursor: pointer;
+      transition: .18s ease;
+      color: #fff;
+    }
+
+    .modelo-cadastrado:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.35);
+      background: linear-gradient(180deg, rgba(21, 44, 74, 0.98), rgba(11, 25, 46, 0.98));
+    }
+
+    .modelo-cadastrado.active {
+      border-color: rgba(56, 189, 248, 0.65);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.20);
+    }
+
+    .modelo-cadastrado h4 {
+      margin: 0 0 8px 0;
+      font-size: 17px;
+      color: #fff;
+    }
+
+    .modelo-cadastrado p {
+      margin: 0;
+      color: #93c5fd;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .formulario-dinamico {
+      display: none;
+      margin-top: 24px;
+      background: linear-gradient(180deg, rgba(20, 40, 66, 0.98), rgba(14, 25, 45, 0.98));
+      padding: 24px;
+      border-radius: 22px;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      max-width: 980px;
+    }
+
+    .formulario-dinamico.show {
+      display: block;
+    }
+
+    .form-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .form-top h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 24px;
+    }
+
+    .form-top p {
+      margin: 6px 0 0;
+      color: #93c5fd;
+      font-size: 14px;
+    }
+
+    .badge-grupo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(56, 189, 248, 0.12);
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .campos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .campo-box {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .campo-box.full {
+      grid-column: 1 / -1;
+    }
+
+    .campo-box label {
+      color: #dbeafe;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .campo-box input,
+    .campo-box select,
+    .campo-box textarea {
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 14px;
+      box-sizing: border-box;
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.98);
+      color: #0f172a;
+      outline: none;
+    }
+
+    .campo-box textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .acoes-form {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .acoes-form button {
+      padding: 14px 18px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: .18s ease;
+    }
+
+    .btn-gerar {
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: #fff;
+      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.22);
+      min-width: 220px;
+    }
+
+    .btn-limpar {
+      background: rgba(255, 255, 255, 0.10);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      min-width: 180px;
+    }
+
+    .btn-gerar:hover,
+    .btn-limpar:hover {
+      transform: translateY(-1px);
+    }
+
+    .estado-box {
+      background: linear-gradient(180deg, rgba(20, 40, 66, 0.98), rgba(14, 25, 45, 0.98));
+      padding: 22px;
+      border-radius: 22px;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-top: 24px;
+      display: none;
+    }
+
+    .estado-box.show {
+      display: block;
+    }
+
+    .estado-box h3 {
+      margin: 0 0 8px 0;
+      color: #fff;
+      font-size: 20px;
+    }
+
+    .estado-box p {
+      margin: 0 0 18px 0;
+      color: #93c5fd;
+      font-size: 14px;
+    }
+
+    .estado-vazio,
+    .loading-modelos {
+      color: #93c5fd;
+      font-size: 14px;
+      padding: 6px 0;
+    }
+
+    .modelo-preview-img {
+      width: 100%;
+      max-width: 620px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 18px;
+      display: none;
+      box-shadow: 0 16px 34px rgba(0,0,0,0.20);
+    }
+
+    @media (max-width: 900px) {
+      .campos-grid,
+      .filtros-modelos {
+        grid-template-columns: 1fr;
+      }
+
+      .page-title {
+        font-size: 31px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+
+    <div class="sidebar">
+
+      <h2>CentralGalva</h2>
+
+      <div class="saldo-box">
+        <div class="saldo-label">Saldo disponível</div>
+        <div class="saldo-value" id="saldoSidebar">R$ 0,00</div>
+      </div>
+
+      <div class="nav-list">
+
+        <a class="nav-link" href="dashboard.html">Dashboard</a>
+
+        <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuApps')">
+          <span>Aplicativos</span>
+          <span class="nav-arrow">></span>
+        </button>
+
+        <div class="submenu" id="submenuApps">
+          <a href="cnh-digital.html" data-modulo="cnh-digital">CNH DIGITAL</a>
+          <a href="historico-cnh.html" data-modulo="historico-cnh">CNH’s Salvas</a>
+
+          <a href="rg-digital.html" data-modulo="rg-digital">RG DIGITAL</a>
+          <a href="historico-rg.html" data-modulo="historico-rg">RG’s Salvos</a>
+        </div>
+
+        <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuEditaveis')">
+          <span>Editáveis</span>
+          <span class="nav-arrow">></span>
+        </button>
+
+        <div class="submenu open" id="submenuEditaveis">
+          <a href="atestado.html" data-modulo="atestado">ATESTADO</a>
+          <a href="historico.html" data-modulo="historico">Atestados Salvos</a>
+
+          <a href="receita.html" data-modulo="receita">RECEITA</a>
+          <a href="historico-receita.html" data-modulo="historico-receita">Receitas Salvas</a>
+
+          <a href="toxicologico.html" data-modulo="toxicologico">TOXICOLÓGICO</a>
+          <a href="historico-toxicologico.html" data-modulo="historico-toxicologico">Toxicológicos Salvos</a>
+
+          <a href="certificado.html" data-modulo="certificado">CERTIFICADO</a>
+          <a href="historico-certificado.html" data-modulo="historico-certificado">Certificados Salvos</a>
+
+          <a href="historico-escolar.html" data-modulo="historico-escolar">HISTÓRICO ESCOLAR</a>
+          <a href="historico-historico-escolar.html" data-modulo="historico-historico-escolar">Históricos Salvos</a>
+
+          <a href="crlv.html" data-modulo="crlv">CRLV (com qr-code)</a>
+          <a href="historico-crlv.html" data-modulo="historico-crlv">CRLV Salvos</a>
+        </div>
+
+        <a class="nav-link" href="loja.html" data-modulo="loja">Loja</a>
+        <a class="nav-link" href="recarga.html" data-modulo="recarga">Recarga</a>
+        <a class="nav-link" href="javascript:void(0)" onclick="logout()">Sair</a>
+
+      </div>
+
+    </div>
+
+    <div class="content">
+
+      <div class="hero-box">
+        <h1 class="page-title">Emitir Atestado</h1>
+        <p class="page-subtitle">
+          Escolha um grupo, filtre por estado e cidade, selecione o modelo e gere o documento em poucos segundos.
+        </p>
+
+        <h3 class="section-title">Escolha o tipo de atestado</h3>
+        <p class="section-subtitle">Os modelos abaixo são organizados por categoria.</p>
+
+        <div class="modelos" id="botoesGrupos">
+          <div class="modelo" data-grupo="UPA" onclick="selecionarGrupo('UPA', this)">
+            <div class="icone">🏥</div>
+            <div>UPA</div>
+          </div>
+
+          <div class="modelo" data-grupo="SUS" onclick="selecionarGrupo('SUS', this)">
+            <div class="icone">🩺</div>
+            <div>SUS</div>
+          </div>
+
+          <div class="modelo" data-grupo="HAPVIDA" onclick="selecionarGrupo('HAPVIDA', this)">
+            <div class="icone">💊</div>
+            <div>Hapvida</div>
+          </div>
+
+          <div class="modelo" data-grupo="UNIMED" onclick="selecionarGrupo('UNIMED', this)">
+            <div class="icone">❤️</div>
+            <div>Unimed</div>
+          </div>
+
+          <div class="modelo" data-grupo="ESPECIFICO" onclick="selecionarGrupo('ESPECIFICO', this)">
+            <div class="icone">📁</div>
+            <div>Modelos Específicos</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="painelModelos" class="painel-box">
+        <h3 class="section-title" id="tituloGrupoModelos">Modelos disponíveis</h3>
+        <p class="section-subtitle" id="subtituloGrupoModelos">
+          Escolha primeiro o estado, depois a cidade e por fim o modelo.
+        </p>
+
+        <div class="filtros-modelos">
+          <div class="filtro-box">
+            <label for="filtroEstado">Estado</label>
+            <select id="filtroEstado" onchange="filtrarPorEstado()">
+              <option value="">Selecione o estado</option>
+            </select>
+          </div>
+
+          <div class="filtro-box">
+            <label for="filtroCidade">Cidade</label>
+            <select id="filtroCidade" onchange="filtrarPorCidade()">
+              <option value="">Selecione a cidade</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="loadingModelos" class="loading-modelos" style="display:none;">Carregando modelos...</div>
+        <div id="estadoVazioModelos" class="estado-vazio" style="display:none;">
+          Nenhum modelo ativo foi cadastrado para este grupo.
+        </div>
+
+        <div class="modelos-cadastrados" id="listaModelosGrupo"></div>
+
+        <img id="previewModeloImagem" class="modelo-preview-img" alt="Prévia do modelo">
+      </div>
+
+      <div id="formularioDinamico" class="formulario-dinamico">
+        <div class="form-top">
+          <div>
+            <h3 id="tituloFormularioModelo">Preenchimento do modelo</h3>
+            <p id="descricaoFormularioModelo">Preencha os campos abaixo para gerar o documento.</p>
+          </div>
+
+          <div class="badge-grupo" id="badgeGrupoFormulario">
+            Grupo
+          </div>
+        </div>
+
+        <div id="camposFormulario" class="campos-grid"></div>
+
+        <div class="acoes-form">
+          <button class="btn-gerar" type="button" onclick="gerarDocumentoDinamico()">
+            Gerar Atestado
+          </button>
+
+          <button class="btn-limpar" type="button" onclick="limparFormularioDinamico()">
+            Limpar Campos
+          </button>
+        </div>
+      </div>
+
+      <div id="estadoInicialAjuda" class="estado-box show">
+        <h3>Como funciona agora</h3>
+        <p>
+          Clique em um grupo acima para carregar os modelos cadastrados pelo administrador.
+          Depois selecione o estado, a cidade, o modelo desejado, preencha o formulário dinâmico e gere o PDF.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/sidebar.js"></script>
+
+  <script>
+    let usuario = null
+
+    function lerUsuarioLocal() {
+      try {
+        const salvo = localStorage.getItem("usuario")
+        return salvo ? JSON.parse(salvo) : null
+      } catch (e) {
+        return null
+      }
+    }
+
+    usuario = lerUsuarioLocal()
+
+    let grupoSelecionado = ""
+    let modelosGrupoAtual = []
+    let modelosFiltradosEstado = []
+    let modelosFiltradosCidade = []
+    let modeloSelecionado = null
+
+    function getUsuarioToken() {
+      const usuarioAtual = lerUsuarioLocal()
+      if (usuarioAtual && usuarioAtual.token) {
+        return String(usuarioAtual.token).trim()
+      }
+      return localStorage.getItem("usuarioToken") || ""
+    }
+
+    function getUsuarioLogado() {
+      const usuarioAtual = lerUsuarioLocal()
+      if (usuarioAtual && usuarioAtual.usuario) {
+        return String(usuarioAtual.usuario).trim()
+      }
+      return localStorage.getItem("usuarioLogado") || ""
+    }
+
+    function atualizarUsuarioEmMemoria() {
+      usuario = lerUsuarioLocal()
+    }
+
+    function limparSessaoUsuario() {
+      localStorage.removeItem("usuario")
+      localStorage.removeItem("usuarioLogado")
+      localStorage.removeItem("usuarioToken")
+    }
+
+    function getUsuarioHeaders(extra = {}) {
+      const token = getUsuarioToken()
+
+      return {
+        ...(token ? { Authorization: "Bearer " + token } : {}),
+        ...extra
+      }
+    }
+
+    async function tratarRespostaUsuario(res) {
+      let data = {}
+
+      try {
+        data = await res.json()
+      } catch (error) {
+        data = {}
+      }
+
+      if (res.status === 401) {
+        limparSessaoUsuario()
+        alert(data.erro || "Sessão expirada. Faça login novamente.")
+        window.location = "login.html"
+        throw new Error(data.erro || "Sessão expirada")
+      }
+
+      if (res.status === 403) {
+        alert(data.erro || "Acesso não autorizado")
+        throw new Error(data.erro || "Acesso não autorizado")
+      }
+
+      if (!res.ok) {
+        throw new Error(data.erro || "Erro na requisição")
+      }
+
+      return data
+    }
+
+    if (!getUsuarioLogado() || !getUsuarioToken()) {
+      limparSessaoUsuario()
+      window.location = "login.html"
+    }
+
+    async function logout() {
+      try {
+        const token = getUsuarioToken()
+
+        if (token) {
+          await fetch("/api/logout", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token
+            }
+          })
+        }
+      } catch (error) {
+        console.error("Erro ao finalizar sessão:", error)
+      }
+
+      limparSessaoUsuario()
+      window.location = "login.html"
+    }
+
+    function mostrarModuloIndisponivel(event) {
+      if (event) {
+        event.preventDefault()
+      }
+      alert("Módulo não disponível no momento!")
+      return false
+    }
+
+    function configurarLinksIndisponiveis() {
+      const modulosDisponiveis = new Set([
+        "dashboard",
+        "cnh-digital",
+        "historico-cnh",
+        "atestado",
+        "historico",
+        "recarga"
+      ])
+
+      const links = document.querySelectorAll("[data-modulo]")
+
+      links.forEach((link) => {
+        const modulo = link.getAttribute("data-modulo")
+
+        if (!modulosDisponiveis.has(modulo)) {
+          link.addEventListener("click", mostrarModuloIndisponivel)
+        }
+      })
+    }
+
+    async function carregarSaldoUsuarioAtualizado() {
+      const usuarioLogado = getUsuarioLogado()
+      if (!usuarioLogado) return
+
+      try {
+        const res = await fetch("/api/usuario/" + encodeURIComponent(usuarioLogado), {
+          method: "GET",
+          headers: getUsuarioHeaders({
+            "Accept": "application/json"
+          }),
+          credentials: "same-origin",
+          cache: "no-store"
+        })
+
+        const data = await tratarRespostaUsuario(res)
+
+        const token = getUsuarioToken()
+        localStorage.setItem("usuario", JSON.stringify({
+          ...(lerUsuarioLocal() || {}),
+          ...data,
+          token
+        }))
+        localStorage.setItem("usuarioLogado", data.usuario || usuarioLogado)
+        localStorage.setItem("usuarioToken", token)
+
+        atualizarUsuarioEmMemoria()
+        carregarSaldoSidebar()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    function esconderEstadoInicial() {
+      const box = document.getElementById("estadoInicialAjuda")
+      if (box) box.classList.remove("show")
+    }
+
+    function normalizarPathParaUrl(caminho) {
+      if (!caminho) return ""
+      return String(caminho)
+        .replace(/^\.\//, "/")
+        .replace(/\\/g, "/")
+    }
+
+    function formatarGrupoBonito(grupo) {
+      const mapa = {
+        UPA: "UPA",
+        SUS: "SUS",
+        HAPVIDA: "Hapvida",
+        UNIMED: "Unimed",
+        ESPECIFICO: "Modelos Específicos"
+      }
+      return mapa[String(grupo || "").toUpperCase()] || grupo || "-"
+    }
+
+    async function selecionarGrupo(grupo, elemento) {
+      grupoSelecionado = String(grupo || "").toUpperCase()
+      modeloSelecionado = null
+      modelosGrupoAtual = []
+      modelosFiltradosEstado = []
+      modelosFiltradosCidade = []
+
+      esconderEstadoInicial()
+
+      document.querySelectorAll(".modelo").forEach(item => item.classList.remove("ativo"))
+      if (elemento) elemento.classList.add("ativo")
+
+      document.getElementById("painelModelos").classList.add("show")
+      document.getElementById("formularioDinamico").classList.remove("show")
+      document.getElementById("listaModelosGrupo").innerHTML = ""
+      document.getElementById("estadoVazioModelos").style.display = "none"
+      document.getElementById("loadingModelos").style.display = "block"
+      document.getElementById("previewModeloImagem").style.display = "none"
+
+      document.getElementById("filtroEstado").innerHTML = `<option value="">Selecione o estado</option>`
+      document.getElementById("filtroCidade").innerHTML = `<option value="">Selecione a cidade</option>`
+
+      document.getElementById("tituloGrupoModelos").textContent = "Modelos disponíveis — " + formatarGrupoBonito(grupoSelecionado)
+      document.getElementById("subtituloGrupoModelos").textContent = "Escolha o estado, a cidade e depois o modelo desejado."
+
+      try {
+        const res = await fetch("/api/modelos-editaveis?grupo=" + encodeURIComponent(grupoSelecionado) + "&ativos=1", {
+          method: "GET",
+          headers: getUsuarioHeaders({
+            "Accept": "application/json"
+          }),
+          credentials: "same-origin",
+          cache: "no-store"
+        })
+
+        const data = await tratarRespostaUsuario(res)
+
+        document.getElementById("loadingModelos").style.display = "none"
+
+        if (!Array.isArray(data) || !data.length) {
+          document.getElementById("estadoVazioModelos").style.display = "block"
+          return
+        }
+
+        modelosGrupoAtual = data
+        popularEstados()
+      } catch (error) {
+        console.error(error)
+        document.getElementById("loadingModelos").style.display = "none"
+        document.getElementById("estadoVazioModelos").style.display = "block"
+      }
+    }
+
+    function popularEstados() {
+      const selectEstado = document.getElementById("filtroEstado")
+      if (!selectEstado) return
+
+      const estados = [...new Set(
+        modelosGrupoAtual
+          .map(item => String(item.estado || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, "pt-BR"))
+
+      selectEstado.innerHTML = `<option value="">Selecione o estado</option>`
+
+      if (!estados.length) {
+        modelosFiltradosEstado = [...modelosGrupoAtual]
+        popularCidadesSemEstado()
+        return
+      }
+
+      estados.forEach(estado => {
+        const option = document.createElement("option")
+        option.value = estado
+        option.textContent = estado
+        selectEstado.appendChild(option)
+      })
+
+      document.getElementById("listaModelosGrupo").innerHTML = ""
+    }
+
+    function popularCidadesSemEstado() {
+      const selectCidade = document.getElementById("filtroCidade")
+      if (!selectCidade) return
+
+      const cidades = [...new Set(
+        modelosFiltradosEstado
+          .map(item => String(item.cidade || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, "pt-BR"))
+
+      selectCidade.innerHTML = `<option value="">Selecione a cidade</option>`
+
+      cidades.forEach(cidade => {
+        const option = document.createElement("option")
+        option.value = cidade
+        option.textContent = cidade
+        selectCidade.appendChild(option)
+      })
+
+      if (!cidades.length) {
+        renderizarModelosGrupo(modelosFiltradosEstado)
+      }
+    }
+
+    function filtrarPorEstado() {
+      const estado = (document.getElementById("filtroEstado")?.value || "").trim()
+      const selectCidade = document.getElementById("filtroCidade")
+
+      modeloSelecionado = null
+      document.getElementById("formularioDinamico").classList.remove("show")
+      document.getElementById("previewModeloImagem").style.display = "none"
+
+      if (!estado) {
+        modelosFiltradosEstado = []
+        modelosFiltradosCidade = []
+        document.getElementById("listaModelosGrupo").innerHTML = ""
+        if (selectCidade) {
+          selectCidade.innerHTML = `<option value="">Selecione a cidade</option>`
+        }
+        return
+      }
+
+      modelosFiltradosEstado = modelosGrupoAtual.filter(item =>
+        String(item.estado || "").trim() === estado
+      )
+
+      if (selectCidade) {
+        selectCidade.innerHTML = `<option value="">Selecione a cidade</option>`
+      }
+
+      const cidades = [...new Set(
+        modelosFiltradosEstado
+          .map(item => String(item.cidade || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, "pt-BR"))
+
+      cidades.forEach(cidade => {
+        const option = document.createElement("option")
+        option.value = cidade
+        option.textContent = cidade
+        selectCidade.appendChild(option)
+      })
+
+      if (!cidades.length) {
+        renderizarModelosGrupo(modelosFiltradosEstado)
+      } else {
+        document.getElementById("listaModelosGrupo").innerHTML = ""
+      }
+    }
+
+    function filtrarPorCidade() {
+      const cidade = (document.getElementById("filtroCidade")?.value || "").trim()
+
+      modeloSelecionado = null
+      document.getElementById("formularioDinamico").classList.remove("show")
+      document.getElementById("previewModeloImagem").style.display = "none"
+
+      if (!cidade) {
+        document.getElementById("listaModelosGrupo").innerHTML = ""
+        return
+      }
+
+      modelosFiltradosCidade = modelosFiltradosEstado.filter(item =>
+        String(item.cidade || "").trim() === cidade
+      )
+
+      renderizarModelosGrupo(modelosFiltradosCidade)
+    }
+
+    function renderizarModelosGrupo(lista) {
+      const container = document.getElementById("listaModelosGrupo")
+      if (!container) return
+
+      if (!Array.isArray(lista) || !lista.length) {
+        container.innerHTML = `
+          <div class="estado-vazio">
+            Nenhum modelo encontrado para essa seleção.
+          </div>
+        `
+        return
+      }
+
+      container.innerHTML = lista.map(modelo => `
+        <div class="modelo-cadastrado" onclick="selecionarModelo('${String(modelo.id).replace(/'/g, "\\'")}')">
+          <h4>${esc(modelo.nome || "-")}</h4>
+          <p>${esc(modelo.descricao || "Modelo pronto para preenchimento.")}</p>
+          <p style="margin-top:8px;">${esc(modelo.estado || "-")} • ${esc(modelo.cidade || "-")}</p>
+          <p style="margin-top:10px;"><strong>${Array.isArray(modelo.campos) ? modelo.campos.length : 0}</strong> campos • <strong>${Number(modelo.custoCreditos || 0)}</strong> créditos</p>
+        </div>
+      `).join("")
+    }
+
+    function selecionarModelo(modeloId) {
+      const origem = modelosFiltradosCidade.length
+        ? modelosFiltradosCidade
+        : (modelosFiltradosEstado.length ? modelosFiltradosEstado : modelosGrupoAtual)
+
+      modeloSelecionado = origem.find(item => String(item.id) === String(modeloId))
+
+      document.querySelectorAll(".modelo-cadastrado").forEach(card => card.classList.remove("active"))
+
+      const cards = Array.from(document.querySelectorAll(".modelo-cadastrado"))
+      const index = origem.findIndex(item => String(item.id) === String(modeloId))
+      if (cards[index]) cards[index].classList.add("active")
+
+      if (!modeloSelecionado) return
+
+      atualizarPreviewModeloUsuario()
+      montarFormularioDinamico(modeloSelecionado)
+    }
+
+    function atualizarPreviewModeloUsuario() {
+      const img = document.getElementById("previewModeloImagem")
+      if (!img || !modeloSelecionado) return
+
+      if (modeloSelecionado.previewImagem) {
+        img.src = normalizarPathParaUrl(modeloSelecionado.previewImagem)
+        img.style.display = "block"
+      } else {
+        img.style.display = "none"
+      }
+    }
+
+    async function montarFormularioDinamico(modelo) {
+      const container = document.getElementById("camposFormulario")
+      const box = document.getElementById("formularioDinamico")
+
+      document.getElementById("tituloFormularioModelo").textContent = modelo.nome || "Modelo"
+      document.getElementById("descricaoFormularioModelo").textContent =
+        modelo.descricao || "Preencha os campos abaixo para gerar o documento."
+      document.getElementById("badgeGrupoFormulario").textContent =
+        `${formatarGrupoBonito(modelo.grupo)} • ${modelo.estado || "-"} • ${modelo.cidade || "-"}`
+
+      container.innerHTML = ""
+
+      const campos = Array.isArray(modelo.campos) ? modelo.campos.filter(c => c.exibirNoFormulario !== false) : []
+
+      for (const campo of campos) {
+        const campoBox = document.createElement("div")
+        campoBox.className = "campo-box"
+
+        if (["textarea", "qrcode", "imagem", "carimbo_png", "assinatura_png"].includes(campo.tipo)) {
+          campoBox.classList.add("full")
+        }
+
+        const label = document.createElement("label")
+        label.textContent = campo.label || campo.nome || "Campo"
+        campoBox.appendChild(label)
+
+        let input
+
+        if (campo.tipo === "textarea") {
+          input = document.createElement("textarea")
+        } else if (campo.tipo === "select") {
+          input = document.createElement("select")
+          const vazio = document.createElement("option")
+          vazio.value = ""
+          vazio.textContent = "Selecione"
+          input.appendChild(vazio)
+
+          ;(Array.isArray(campo.opcoes) ? campo.opcoes : []).forEach(opcao => {
+            const opt = document.createElement("option")
+            opt.value = opcao
+            opt.textContent = opcao
+            input.appendChild(opt)
+          })
+        } else if (campo.tipo === "medico_select") {
+          input = document.createElement("select")
+          input.dataset.tipoEspecial = "medico_select"
+
+          const vazio = document.createElement("option")
+          vazio.value = ""
+          vazio.textContent = "Selecione o médico"
+          input.appendChild(vazio)
+
+          try {
+            const res = await fetch("/api/medicos-modelos?grupo=" + encodeURIComponent(modelo.grupo), {
+              method: "GET",
+              headers: getUsuarioHeaders({
+                "Accept": "application/json"
+              }),
+              credentials: "same-origin",
+              cache: "no-store"
+            })
+
+            const medicos = await tratarRespostaUsuario(res)
+
+            ;(Array.isArray(medicos) ? medicos : [])
+              .filter(medico => medico.ativo !== false)
+              .filter(medico => {
+                return String(medico.modeloId || "") === String(modelo.id || "") ||
+                       String(medico.modeloNome || "").trim().toLowerCase() === String(modelo.nome || "").trim().toLowerCase()
+              })
+              .forEach(medico => {
+                const opt = document.createElement("option")
+                opt.value = medico.id
+                opt.textContent = `${medico.nome || "Médico"}${medico.crm ? " - " + medico.crm : ""}`
+                input.appendChild(opt)
+              })
+          } catch (error) {
+            console.error(error)
+          }
+        } else {
+          input = document.createElement("input")
+          input.type = resolverTipoInput(campo.tipo)
+        }
+
+        input.id = "campo_" + (campo.nome || campo.id || "campo")
+        input.placeholder = campo.placeholder || ""
+        input.value = campo.valorPadrao || ""
+
+        if (campo.obrigatorio) {
+          input.required = true
+        }
+
+        if (campo.tipo === "campo_auto") {
+          input.readOnly = true
+          input.value = campo.valorPadrao || ""
+        }
+
+        campoBox.appendChild(input)
+        container.appendChild(campoBox)
+      }
+
+      box.classList.add("show")
+    }
+
+    function resolverTipoInput(tipo) {
+      switch (String(tipo || "").toLowerCase()) {
+        case "cpf":
+          return "text"
+        case "data":
+          return "date"
+        case "numero":
+          return "number"
+        default:
+          return "text"
+      }
+    }
+
+    function limparFormularioDinamico() {
+      if (!modeloSelecionado) return
+
+      const campos = Array.isArray(modeloSelecionado.campos)
+        ? modeloSelecionado.campos.filter(c => c.exibirNoFormulario !== false)
+        : []
+
+      campos.forEach(campo => {
+        const el = document.getElementById("campo_" + (campo.nome || campo.id || "campo"))
+        if (!el) return
+
+        if (campo.tipo === "select" || campo.tipo === "medico_select") {
+          el.value = ""
+        } else if (campo.tipo === "campo_auto") {
+          el.value = campo.valorPadrao || ""
+        } else {
+          el.value = ""
+        }
+      })
+    }
+
+    async function gerarDocumentoDinamico() {
+      try {
+        const usuarioLogado = getUsuarioLogado()
+
+        if (!modeloSelecionado) {
+          alert("Selecione um modelo antes de gerar")
+          return
+        }
+
+        if (!usuarioLogado) {
+          alert("Usuário inválido")
+          window.location = "login.html"
+          return
+        }
+
+        const valores = {}
+        const campos = Array.isArray(modeloSelecionado.campos)
+          ? modeloSelecionado.campos.filter(c => c.exibirNoFormulario !== false)
+          : []
+
+        for (const campo of campos) {
+          const nomeCampo = campo.nome || campo.id || "campo"
+          const el = document.getElementById("campo_" + nomeCampo)
+          if (!el) continue
+
+          const valor = el.value
+
+          if (campo.obrigatorio && String(valor || "").trim() === "") {
+            alert("Preencha o campo obrigatório: " + (campo.label || nomeCampo))
+            el.focus()
+            return
+          }
+
+          valores[nomeCampo] = valor
+        }
+
+        const res = await fetch("/api/modelos-editaveis/gerar", {
+          method: "POST",
+          headers: getUsuarioHeaders({
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          }),
+          credentials: "same-origin",
+          cache: "no-store",
+          body: JSON.stringify({
+            usuario: usuarioLogado,
+            modeloId: modeloSelecionado.id,
+            valores
+          })
+        })
+
+        const resp = await tratarRespostaUsuario(res)
+
+        if (resp.pdf) {
+          window.open(resp.pdf, "_blank", "noopener")
+        }
+
+        if (resp.saldo !== undefined) {
+          const token = getUsuarioToken()
+          const usuarioLocal = lerUsuarioLocal() || {}
+          usuarioLocal.saldo = resp.saldo
+          usuarioLocal.token = token
+          usuarioLocal.usuario = usuarioLogado
+
+          localStorage.setItem("usuario", JSON.stringify(usuarioLocal))
+          localStorage.setItem("usuarioLogado", usuarioLogado)
+          localStorage.setItem("usuarioToken", token)
+
+          atualizarUsuarioEmMemoria()
+          carregarSaldoSidebar()
+          await carregarSaldoUsuarioAtualizado()
+        }
+      } catch (error) {
+        console.error(error)
+        alert(error.message || "Erro ao gerar documento")
+      }
+    }
+
+    function esc(texto) {
+      return String(texto ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+    }
+
+    configurarLinksIndisponiveis()
+    atualizarUsuarioEmMemoria()
+    carregarSaldoSidebar()
+    carregarSaldoUsuarioAtualizado()
+  </script>
+
+</body>
+
+</html>

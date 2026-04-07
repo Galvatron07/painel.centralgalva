@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App - Início</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <div class="app-screen tela-home">
+
+    <div class="topo-home">
+      <button class="menu-home" type="button" aria-label="Menu" onclick="return false;">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="topo-home-direita">
+        <button class="sino-home" type="button" aria-label="Notificações" onclick="return false;">🔔</button>
+        <div class="avatar-home" id="avatarHome">U</div>
+      </div>
+    </div>
+
+    <div class="home-conteudo">
+
+      <button class="home-botao" type="button" onclick="clicarBotao(1)">
+        <img src="img/botao-1.png" alt="Botão 1">
+      </button>
+
+      <button class="home-botao" type="button" onclick="clicarBotao(2)">
+        <img src="img/botao-2.png" alt="Botão 2">
+      </button>
+
+      <button class="home-botao" type="button" onclick="clicarBotao(3)">
+        <img src="img/botao-3.png" alt="Botão 3">
+      </button>
+
+      <button class="home-botao" type="button" onclick="clicarBotao(4)">
+        <img src="img/botao-4.png" alt="Botão 4">
+      </button>
+
+    </div>
+
+    <div class="home-fundo-png"></div>
+
+  </div>
+
+  <script>
+    function limparSessaoApp() {
+      localStorage.removeItem("appLogado")
+      localStorage.removeItem("dadosUsuarioApp")
+      localStorage.removeItem("inicialApp")
+      localStorage.removeItem("cpfApp")
+    }
+
+    function obterSessaoApp() {
+      try {
+        const appLogado = localStorage.getItem("appLogado")
+        const dadosUsuarioApp = JSON.parse(localStorage.getItem("dadosUsuarioApp") || "null")
+
+        if (appLogado !== "true") return null
+        if (!dadosUsuarioApp || typeof dadosUsuarioApp !== "object") return null
+        if (!dadosUsuarioApp.id || !dadosUsuarioApp.cpf) return null
+
+        return dadosUsuarioApp
+      } catch (error) {
+        return null
+      }
+    }
+
+    async function validarCadastroNoServidor(id) {
+      try {
+        const res = await fetch("/api/app/validacao/" + encodeURIComponent(id))
+        if (!res.ok) return null
+        return await res.json()
+      } catch (error) {
+        return null
+      }
+    }
+
+    async function iniciarHome() {
+      const dadosUsuarioApp = obterSessaoApp()
+      const avatar = document.getElementById("avatarHome")
+
+      if (!dadosUsuarioApp) {
+        limparSessaoApp()
+        window.location.href = "login-cpf.html"
+        return
+      }
+
+      const cadastroServidor = await validarCadastroNoServidor(dadosUsuarioApp.id)
+
+      if (!cadastroServidor || cadastroServidor.erro) {
+        limparSessaoApp()
+        alert("Seu cadastro foi removido, expirou ou não está mais disponível.")
+        window.location.href = "login-cpf.html"
+        return
+      }
+
+      const dadosAtualizados = {
+        ...dadosUsuarioApp,
+        nome: cadastroServidor.nomeCompleto || dadosUsuarioApp.nome || "",
+        nomeCivil: cadastroServidor.nomeCompleto || dadosUsuarioApp.nomeCivil || "",
+        cpf: cadastroServidor.cpf || dadosUsuarioApp.cpf || "",
+        categoria: cadastroServidor.categoria || dadosUsuarioApp.categoria || "",
+        validade: cadastroServidor.validade || dadosUsuarioApp.validade || "",
+        numeroDocumento: cadastroServidor.numeroDocumento || dadosUsuarioApp.numeroDocumento || "",
+        orgaoEmissor: cadastroServidor.orgaoEmissor || dadosUsuarioApp.orgaoEmissor || "",
+        ufEmissao: cadastroServidor.ufEmissao || dadosUsuarioApp.ufEmissao || "",
+        dataNascimento: cadastroServidor.dataNascimento || dadosUsuarioApp.dataNascimento || "",
+        nomePai: cadastroServidor.nomePai || dadosUsuarioApp.nomePai || "",
+        nomeMae: cadastroServidor.nomeMae || dadosUsuarioApp.nomeMae || "",
+        permissao: cadastroServidor.tipoDocumento || dadosUsuarioApp.permissao || "",
+        acc: cadastroServidor.acc || dadosUsuarioApp.acc || "NÃO",
+        numeroRegistro: cadastroServidor.numeroRegistro || dadosUsuarioApp.numeroRegistro || "",
+        primeiraHabilitacao: cadastroServidor.primeiraHabilitacao || dadosUsuarioApp.primeiraHabilitacao || "",
+        observacoes: cadastroServidor.observacoes || dadosUsuarioApp.observacoes || "",
+        cidadeEmissao: cadastroServidor.cidadeEmissao || dadosUsuarioApp.cidadeEmissao || "",
+        uf: cadastroServidor.ufCnh || dadosUsuarioApp.uf || "",
+        dataEmissao: cadastroServidor.dataEmissao || dadosUsuarioApp.dataEmissao || "",
+        numeroValidacao: cadastroServidor.codigoSeguranca || dadosUsuarioApp.numeroValidacao || "",
+        renach: cadastroServidor.renach || dadosUsuarioApp.renach || "",
+        foto: cadastroServidor.fotoRosto || dadosUsuarioApp.foto || "img/foto-validacao.png"
+      }
+
+      localStorage.setItem("dadosUsuarioApp", JSON.stringify(dadosAtualizados))
+
+      const nome = dadosAtualizados.nome || dadosAtualizados.nomeCivil || ""
+      const inicial = nome ? nome.trim().charAt(0).toUpperCase() : "U"
+
+      localStorage.setItem("inicialApp", inicial)
+
+      if (avatar) {
+        avatar.innerText = inicial
+      }
+    }
+
+    function clicarBotao(numero) {
+      if (numero === 1) {
+        window.location.href = "info.html"
+        return
+      }
+
+      return false
+    }
+
+    iniciarHome()
+  </script>
+
+</body>
+</html>

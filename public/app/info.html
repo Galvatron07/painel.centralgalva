@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informações do Condutor</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <div class="app-screen tela-info">
+
+    <div class="topo-home topo-condutor">
+      <button class="menu-home" type="button" aria-label="Menu" onclick="return false;">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="topo-condutor-titulo">CONDUTOR</div>
+
+      <div class="topo-home-direita">
+        <div class="avatar-home" id="avatarInfo">U</div>
+      </div>
+    </div>
+
+    <div class="info-fundo-png"></div>
+
+    <div class="info-conteudo">
+
+      <div class="info-card info-card-condutor">
+        <div class="info-card-topo">
+          <h2 class="info-card-titulo">Informações do Condutor</h2>
+
+          <img
+            class="info-selo"
+            src="img/selo-condutor.png"
+            alt="Selo"
+            onerror="this.style.display='none'"
+          >
+        </div>
+
+        <div class="info-linha-separador"></div>
+
+        <div class="info-grupo info-grupo-nome">
+          <span class="info-label">Nome</span>
+          <span class="info-valor" id="infoNome">---</span>
+        </div>
+
+        <div class="info-grid">
+
+          <div class="info-item">
+            <span class="info-label">CPF</span>
+            <span class="info-valor" id="infoCpf">---</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Sexo</span>
+            <span class="info-valor" id="infoSexo">---</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Categoria</span>
+            <span class="info-valor" id="infoCategoria">---</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">UF de Emissão</span>
+            <span class="info-valor" id="infoUf">---</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Data de Validade</span>
+            <span class="info-valor" id="infoValidade">---</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Data de Emissão</span>
+            <span class="info-valor" id="infoEmissao">---</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="info-botoes-grid">
+
+        <button class="info-botao" type="button" onclick="clicarInfoBotao(1)">
+          <img src="img/info-botao-1.png" alt="Botão 1">
+        </button>
+
+        <button class="info-botao" type="button" onclick="clicarInfoBotao(2)">
+          <img src="img/info-botao-2.png" alt="Botão 2">
+        </button>
+
+        <button class="info-botao" type="button" onclick="clicarInfoBotao(3)">
+          <img src="img/info-botao-3.png" alt="Botão 3">
+        </button>
+
+        <button class="info-botao" type="button" onclick="clicarInfoBotao(4)">
+          <img src="img/info-botao-4.png" alt="Botão 4">
+        </button>
+
+        <button class="info-botao info-botao-largo" type="button" onclick="clicarInfoBotao(5)">
+          <img src="img/info-botao-5.png" alt="Botão 5">
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    function limparSessaoApp() {
+      localStorage.removeItem("appLogado")
+      localStorage.removeItem("dadosUsuarioApp")
+      localStorage.removeItem("inicialApp")
+      localStorage.removeItem("cpfApp")
+    }
+
+    function obterSessaoApp() {
+      try {
+        const appLogado = localStorage.getItem("appLogado")
+        const dadosUsuarioApp = JSON.parse(localStorage.getItem("dadosUsuarioApp") || "null")
+
+        if (appLogado !== "true") return null
+        if (!dadosUsuarioApp || typeof dadosUsuarioApp !== "object") return null
+        if (!dadosUsuarioApp.id || !dadosUsuarioApp.cpf) return null
+
+        return dadosUsuarioApp
+      } catch (error) {
+        return null
+      }
+    }
+
+    async function validarCadastroNoServidor(id) {
+      try {
+        const res = await fetch("/api/app/validacao/" + encodeURIComponent(id))
+        if (!res.ok) return null
+        return await res.json()
+      } catch (error) {
+        return null
+      }
+    }
+
+    async function iniciarInfo() {
+      const avatarInfo = document.getElementById("avatarInfo")
+      const dadosUsuarioApp = obterSessaoApp()
+
+      if (!dadosUsuarioApp) {
+        limparSessaoApp()
+        window.location.href = "login-cpf.html"
+        return
+      }
+
+      const cadastroServidor = await validarCadastroNoServidor(dadosUsuarioApp.id)
+
+      if (!cadastroServidor || cadastroServidor.erro) {
+        limparSessaoApp()
+        alert("Seu cadastro foi removido, expirou ou não está mais disponível.")
+        window.location.href = "login-cpf.html"
+        return
+      }
+
+      const dadosAtualizados = {
+        ...dadosUsuarioApp,
+        nome: cadastroServidor.nomeCompleto || dadosUsuarioApp.nome || "",
+        nomeCivil: cadastroServidor.nomeCompleto || dadosUsuarioApp.nomeCivil || "",
+        cpf: cadastroServidor.cpf || dadosUsuarioApp.cpf || "",
+        sexo: cadastroServidor.sexo || dadosUsuarioApp.sexo || "",
+        categoria: cadastroServidor.categoria || dadosUsuarioApp.categoria || "",
+        uf: cadastroServidor.ufCnh || cadastroServidor.ufEmissao || dadosUsuarioApp.uf || "",
+        validade: cadastroServidor.validade || dadosUsuarioApp.validade || "",
+        dataEmissao: cadastroServidor.dataEmissao || dadosUsuarioApp.dataEmissao || "",
+        numeroDocumento: cadastroServidor.numeroDocumento || dadosUsuarioApp.numeroDocumento || "",
+        orgaoEmissor: cadastroServidor.orgaoEmissor || dadosUsuarioApp.orgaoEmissor || "",
+        ufEmissao: cadastroServidor.ufEmissao || dadosUsuarioApp.ufEmissao || "",
+        dataNascimento: cadastroServidor.dataNascimento || dadosUsuarioApp.dataNascimento || "",
+        nomePai: cadastroServidor.nomePai || dadosUsuarioApp.nomePai || "",
+        nomeMae: cadastroServidor.nomeMae || dadosUsuarioApp.nomeMae || "",
+        permissao: cadastroServidor.tipoDocumento || dadosUsuarioApp.permissao || "",
+        acc: cadastroServidor.acc || dadosUsuarioApp.acc || "NÃO",
+        numeroRegistro: cadastroServidor.numeroRegistro || dadosUsuarioApp.numeroRegistro || "",
+        primeiraHabilitacao: cadastroServidor.primeiraHabilitacao || dadosUsuarioApp.primeiraHabilitacao || "",
+        observacoes: cadastroServidor.observacoes || dadosUsuarioApp.observacoes || "",
+        cidadeEmissao: cadastroServidor.cidadeEmissao || dadosUsuarioApp.cidadeEmissao || "",
+        numeroValidacao: cadastroServidor.codigoSeguranca || dadosUsuarioApp.numeroValidacao || "",
+        renach: cadastroServidor.renach || dadosUsuarioApp.renach || "",
+        foto: cadastroServidor.fotoRosto || dadosUsuarioApp.foto || "img/foto-validacao.png"
+      }
+
+      localStorage.setItem("dadosUsuarioApp", JSON.stringify(dadosAtualizados))
+
+      const nome = dadosAtualizados.nome || dadosAtualizados.nomeCivil || ""
+      const inicial = nome ? nome.trim().charAt(0).toUpperCase() : "U"
+
+      localStorage.setItem("inicialApp", inicial)
+
+      if (avatarInfo) {
+        avatarInfo.innerText = inicial
+      }
+
+      document.getElementById("infoNome").innerText = dadosAtualizados.nome || "---"
+      document.getElementById("infoCpf").innerText = dadosAtualizados.cpf || "---"
+      document.getElementById("infoSexo").innerText = dadosAtualizados.sexo || "---"
+      document.getElementById("infoCategoria").innerText = dadosAtualizados.categoria || "---"
+      document.getElementById("infoUf").innerText = dadosAtualizados.uf || "---"
+      document.getElementById("infoValidade").innerText = dadosAtualizados.validade || "---"
+      document.getElementById("infoEmissao").innerText = dadosAtualizados.dataEmissao || "---"
+    }
+
+    function clicarInfoBotao(numero) {
+      if (numero === 1) {
+        window.location.href = "cracha.html"
+        return
+      }
+
+      return false
+    }
+
+    iniciarInfo()
+  </script>
+
+</body>
+</html>

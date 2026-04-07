@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CentralGalva</title>
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https://wa.me; img-src 'self' data: blob: https://wa.me; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'">
+  <link rel="stylesheet" href="css/sidebar.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <div class="sidebar">
+
+    <h2>CentralGalva</h2>
+
+    <div class="saldo-box">
+      <div class="saldo-label">Saldo disponível</div>
+      <div class="saldo-value" id="saldoSidebar">R$ 0,00</div>
+    </div>
+
+    <div class="nav-list">
+
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+
+      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuApps')">
+        <span>Aplicativos</span>
+        <span class="nav-arrow">></span>
+      </button>
+
+      <div class="submenu" id="submenuApps">
+        <a href="cnh-digital.html" data-modulo="cnh-digital">CNH DIGITAL</a>
+        <a href="historico-cnh.html" data-modulo="historico-cnh">CNH’s Salvas</a>
+
+        <a href="rg-digital.html" data-modulo="rg-digital">RG DIGITAL</a>
+        <a href="historico-rg.html" data-modulo="historico-rg">RG’s Salvos</a>
+      </div>
+
+      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuEditaveis')">
+        <span>Editáveis</span>
+        <span class="nav-arrow">></span>
+      </button>
+
+      <div class="submenu" id="submenuEditaveis">
+        <a href="atestado.html" data-modulo="atestado">ATESTADO</a>
+        <a href="historico.html" data-modulo="historico">Atestados Salvos</a>
+
+        <a href="receita.html" data-modulo="receita">RECEITA</a>
+        <a href="historico-receita.html" data-modulo="historico-receita">Receitas Salvas</a>
+
+        <a href="toxicologico.html" data-modulo="toxicologico">TOXICOLÓGICO</a>
+        <a href="historico-toxicologico.html" data-modulo="historico-toxicologico">Toxicológicos Salvos</a>
+
+        <a href="certificado.html" data-modulo="certificado">CERTIFICADO</a>
+        <a href="historico-certificado.html" data-modulo="historico-certificado">Certificados Salvos</a>
+
+        <a href="historico-escolar.html" data-modulo="historico-escolar">HISTÓRICO ESCOLAR</a>
+        <a href="historico-historico-escolar.html" data-modulo="historico-historico-escolar">Históricos Salvos</a>
+
+        <a href="crlv.html" data-modulo="crlv">CRLV (com qr-code)</a>
+        <a href="historico-crlv.html" data-modulo="historico-crlv">CRLV Salvos</a>
+      </div>
+
+      <a class="nav-link" href="loja.html" data-modulo="loja">Loja</a>
+      <a class="nav-link" href="recarga.html" data-modulo="recarga">Recarga</a>
+      <a class="nav-link" href="javascript:void(0)" onclick="logout()">Sair</a>
+
+    </div>
+
+  </div>
+
+  <div class="content">
+
+    <div class="topbar">
+      <div>
+        <h1 id="bemvindo">Olá</h1>
+        <p style="color:#94a3b8;margin-top:6px;">Acompanhe seu saldo e seus documentos</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Documentos</h3>
+        <p id="docs">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Saldo</h3>
+        <p id="saldoCard">R$ 0,00</p>
+      </div>
+    </div>
+
+    <div class="aviso-box">
+      <h3>Central de Avisos</h3>
+      <p>Nenhum aviso no momento.</p>
+
+      <a
+        href="https://wa.me/5511964489240?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20na%20CentralGalva."
+        target="_blank"
+        rel="noopener noreferrer"
+        style="
+          display:inline-block;
+          margin-top:16px;
+          padding:12px 18px;
+          border-radius:14px;
+          text-decoration:none;
+          font-weight:700;
+          background:#25d366;
+          color:#fff;
+        "
+      >
+        Falar no WhatsApp
+      </a>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="js/sidebar.js"></script>
+
+<script>
+function formatarSaldo(valor) {
+  return "R$ " + Number(valor || 0).toFixed(2).replace(".", ",")
+}
+
+function getUsuarioDashboard() {
+  try {
+    const usuario = JSON.parse(localStorage.getItem("usuario"))
+    if (usuario && typeof usuario === "object") {
+      return usuario
+    }
+    return null
+  } catch (e) {
+    return null
+  }
+}
+
+function getTokenDashboard() {
+  const usuario = getUsuarioDashboard()
+
+  if (usuario && usuario.token) {
+    return String(usuario.token).trim()
+  }
+
+  return localStorage.getItem("usuarioToken") || ""
+}
+
+function limparSessaoDashboard() {
+  localStorage.removeItem("usuario")
+  localStorage.removeItem("usuarioLogado")
+  localStorage.removeItem("usuarioToken")
+}
+
+function salvarSessaoDashboard(dadosAtualizados = {}) {
+  const atual = getUsuarioDashboard() || {}
+  const final = {
+    ...atual,
+    ...dadosAtualizados
+  }
+
+  if (final && final.usuario) {
+    localStorage.setItem("usuario", JSON.stringify(final))
+    localStorage.setItem("usuarioLogado", final.usuario)
+
+    if (final.token) {
+      localStorage.setItem("usuarioToken", final.token)
+    }
+  }
+}
+
+function getHeadersDashboard() {
+  const token = getTokenDashboard()
+
+  return {
+    "Accept": "application/json",
+    ...(token ? { Authorization: "Bearer " + token } : {})
+  }
+}
+
+function preencherTela(user) {
+  if (!user) return
+
+  const nome = user.usuario || user.email || ""
+  const saldo = Number(user.saldo || 0)
+  const documentos = Number(user.documentos || 0)
+
+  const bemvindo = document.getElementById("bemvindo")
+  const saldoSidebar = document.getElementById("saldoSidebar")
+  const saldoCard = document.getElementById("saldoCard")
+  const docs = document.getElementById("docs")
+
+  if (bemvindo) {
+    bemvindo.textContent = "Olá, " + nome
+  }
+
+  if (saldoSidebar) {
+    saldoSidebar.textContent = formatarSaldo(saldo)
+  }
+
+  if (saldoCard) {
+    saldoCard.textContent = formatarSaldo(saldo)
+  }
+
+  if (docs) {
+    docs.textContent = String(documentos)
+  }
+}
+
+function mostrarModuloIndisponivel(event) {
+  if (event) {
+    event.preventDefault()
+  }
+  alert("Módulo não disponível no momento!")
+  return false
+}
+
+function configurarLinksIndisponiveis() {
+  const modulosDisponiveis = new Set([
+    "dashboard",
+    "cnh-digital",
+    "historico-cnh",
+    "atestado",
+    "historico",
+    "recarga"
+  ])
+
+  const links = document.querySelectorAll("[data-modulo]")
+
+  links.forEach((link) => {
+    const modulo = link.getAttribute("data-modulo")
+
+    if (!modulosDisponiveis.has(modulo)) {
+      link.addEventListener("click", mostrarModuloIndisponivel)
+    }
+  })
+}
+
+async function carregarDashboardUsuario() {
+  let usuarioSalvo = getUsuarioDashboard()
+
+  if (usuarioSalvo) {
+    preencherTela(usuarioSalvo)
+  }
+
+  let nomeUsuario = ""
+
+  if (usuarioSalvo && usuarioSalvo.usuario) {
+    nomeUsuario = usuarioSalvo.usuario
+  }
+
+  if (!nomeUsuario) {
+    nomeUsuario = localStorage.getItem("usuarioLogado") || ""
+  }
+
+  const token = getTokenDashboard()
+
+  if (!nomeUsuario || !token) {
+    limparSessaoDashboard()
+    window.location.href = "login.html"
+    return
+  }
+
+  try {
+    const res = await fetch("/api/usuario/" + encodeURIComponent(nomeUsuario), {
+      method: "GET",
+      headers: getHeadersDashboard(),
+      credentials: "same-origin",
+      cache: "no-store"
+    })
+
+    const user = await res.json()
+
+    if (res.status === 401) {
+      limparSessaoDashboard()
+      alert(user.erro || "Sessão expirada. Faça login novamente.")
+      window.location.href = "login.html"
+      return
+    }
+
+    if (!res.ok || user.erro) {
+      console.warn("Não foi possível atualizar os dados do usuário.")
+      return
+    }
+
+    salvarSessaoDashboard(user)
+    preencherTela(user)
+
+  } catch (error) {
+    console.error("Erro ao buscar usuário:", error)
+  }
+}
+
+window.addEventListener("load", () => {
+  configurarLinksIndisponiveis()
+  carregarDashboardUsuario()
+})
+</script>
+
+</body>
+</html>

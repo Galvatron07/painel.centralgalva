@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhamento</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <div class="app-screen tela-validacao">
+
+    <div class="topo-validacao">
+      <div class="topo-validacao-titulo">Detalhamento</div>
+      <button class="topo-validacao-info" type="button" aria-label="Informações">i</button>
+    </div>
+
+    <div class="validacao-scroll">
+      <div class="validacao-conteudo">
+
+        <div class="validacao-cabecalho">
+          <h1 class="validacao-doc-titulo">CNH</h1>
+          <p class="validacao-doc-subtitulo">SENATRAN</p>
+
+          <div class="validacao-foto-wrap">
+            <img id="validacaoFoto" class="validacao-foto" src="img/foto-validacao.png" alt="Foto do usuário">
+          </div>
+        </div>
+
+        <div class="validacao-card">
+
+          <div class="validacao-item validacao-item-nome">
+            <span class="validacao-label">Nome</span>
+            <span class="validacao-valor" id="valNome">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Nome Civil</span>
+            <span class="validacao-valor" id="valNomeCivil">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Doc. Identidade/Órg. Emissor/UF</span>
+            <span class="validacao-valor" id="valDocIdentidade">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">CPF</span>
+            <span class="validacao-valor" id="valCpf">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Data de Nascimento</span>
+            <span class="validacao-valor" id="valNascimento">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Filiação Pai</span>
+            <span class="validacao-valor" id="valPai">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Filiação Mãe</span>
+            <span class="validacao-valor" id="valMae">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Permissão</span>
+            <span class="validacao-valor" id="valPermissao">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">ACC</span>
+            <span class="validacao-valor" id="valAcc">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Cat. Hab.</span>
+            <span class="validacao-valor" id="valCategoria">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Nº Registro</span>
+            <span class="validacao-valor" id="valRegistro">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Validade</span>
+            <span class="validacao-valor" id="valValidade">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">1ª Habilitação</span>
+            <span class="validacao-valor" id="valPrimeiraHabilitacao">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Observações</span>
+            <span class="validacao-valor" id="valObservacoes">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Local</span>
+            <span class="validacao-valor" id="valLocal">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">UF</span>
+            <span class="validacao-valor" id="valUf">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Data de Emissão</span>
+            <span class="validacao-valor" id="valEmissao">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Número Validação CNH</span>
+            <span class="validacao-valor" id="valNumeroValidacao">---</span>
+          </div>
+
+          <div class="validacao-item">
+            <span class="validacao-label">Número Formulário RENACH</span>
+            <span class="validacao-valor" id="valRenach">---</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function preencherValidacao(dados) {
+      document.getElementById("valNome").innerText = dados.nomeCompleto || "---"
+      document.getElementById("valNomeCivil").innerText = dados.nomeCompleto || "---"
+
+      const docIdentidade = `${dados.numeroDocumento || ""} ${dados.orgaoEmissor || ""} ${dados.ufEmissao || ""}`.trim()
+      document.getElementById("valDocIdentidade").innerText = docIdentidade || "---"
+
+      document.getElementById("valCpf").innerText = dados.cpf || "---"
+      document.getElementById("valNascimento").innerText = dados.dataNascimento || "---"
+      document.getElementById("valPai").innerText = dados.nomePai || "---"
+      document.getElementById("valMae").innerText = dados.nomeMae || "---"
+      document.getElementById("valPermissao").innerText = dados.tipoDocumento || "---"
+      document.getElementById("valAcc").innerText = dados.acc || "NÃO"
+      document.getElementById("valCategoria").innerText = dados.categoria || "---"
+      document.getElementById("valRegistro").innerText = dados.numeroRegistro || "---"
+      document.getElementById("valValidade").innerText = dados.validade || "---"
+      document.getElementById("valPrimeiraHabilitacao").innerText = dados.primeiraHabilitacao || "---"
+      document.getElementById("valObservacoes").innerText = dados.observacoes || "---"
+      document.getElementById("valLocal").innerText = dados.cidadeEmissao || "---"
+      document.getElementById("valUf").innerText = dados.ufCnh || dados.ufEmissao || "---"
+      document.getElementById("valEmissao").innerText = dados.dataEmissao || "---"
+      document.getElementById("valNumeroValidacao").innerText = dados.codigoSeguranca || "---"
+      document.getElementById("valRenach").innerText = dados.renach || "---"
+
+      if (dados.fotoRosto) {
+        document.getElementById("validacaoFoto").src = dados.fotoRosto
+      }
+    }
+
+    async function carregarValidacao() {
+      const params = new URLSearchParams(window.location.search)
+      const id = params.get("id")
+
+      if (!id) {
+        alert("Código de validação não informado")
+        return
+      }
+
+      try {
+        const res = await fetch("/api/app/validacao/" + encodeURIComponent(id))
+        const data = await res.json()
+
+        if (!res.ok || data.erro) {
+          alert(data.erro || "Não foi possível carregar a validação")
+          return
+        }
+
+        preencherValidacao(data)
+      } catch (error) {
+        console.error(error)
+        alert("Erro ao carregar validação")
+      }
+    }
+
+    carregarValidacao()
+  </script>
+
+</body>
+</html>

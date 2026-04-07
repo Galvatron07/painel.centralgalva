@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recarga</title>
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'">
+
+  <link rel="stylesheet" href="css/sidebar.css">
+
+  <style>
+    .page-title{
+      margin:0 0 20px 0;
+      font-size:32px;
+      font-weight:700;
+      letter-spacing:-0.8px;
+    }
+
+    .cardsRecarga{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:18px;
+      margin-bottom:24px;
+    }
+
+    .cardValor{
+      background:linear-gradient(180deg, rgba(20,40,66,0.98), rgba(14,25,45,0.98));
+      border-radius:20px;
+      padding:24px 20px;
+      text-align:center;
+      cursor:pointer;
+      box-shadow:0 16px 34px rgba(0,0,0,0.22);
+      transition:.18s ease;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    .cardValor:hover{
+      background:#1d385d;
+      transform:translateY(-2px);
+    }
+
+    .valor{
+      font-size:30px;
+      font-weight:800;
+      letter-spacing:-0.7px;
+    }
+
+    .credito{
+      margin-top:8px;
+      font-size:14px;
+      opacity:.88;
+      color:#c9ddf7;
+    }
+
+    .customRecarga{
+      background:linear-gradient(180deg, rgba(20,40,66,0.98), rgba(14,25,45,0.98));
+      padding:24px;
+      border-radius:20px;
+      box-shadow:0 16px 34px rgba(0,0,0,0.22);
+      margin-bottom:24px;
+      max-width:600px;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    .customRecarga input{
+      width:100%;
+      padding:14px 15px;
+      margin-bottom:12px;
+      border-radius:14px;
+      box-sizing:border-box;
+      font-size:14px;
+    }
+
+    .customRecarga button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg, #38bdf8, #2563eb);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 12px 25px rgba(37,99,235,0.22);
+    }
+
+    table{
+      width:100%;
+      background:#0f1a2e;
+      border-collapse:collapse;
+      color:white;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 16px 34px rgba(0,0,0,0.22);
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    th,td{
+      padding:14px 12px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      color:#e5eefc;
+    }
+
+    th{
+      background:#14233d;
+      color:#b9cae4;
+      text-transform:uppercase;
+      font-size:12px;
+      letter-spacing:.5px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+  <div class="sidebar">
+
+    <h2>CentralGalva</h2>
+
+    <div class="saldo-box">
+      <div class="saldo-label">Saldo disponível</div>
+      <div class="saldo-value" id="saldoSidebar">R$ 0,00</div>
+    </div>
+
+    <div class="nav-list">
+
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+
+      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuApps')">
+        <span>Aplicativos</span>
+        <span class="nav-arrow">></span>
+      </button>
+
+      <div class="submenu" id="submenuApps">
+        <a href="cnh-digital.html" data-modulo="cnh-digital">CNH DIGITAL</a>
+        <a href="historico-cnh.html" data-modulo="historico-cnh">CNH’s Salvas</a>
+
+        <a href="rg-digital.html" data-modulo="rg-digital">RG DIGITAL</a>
+        <a href="historico-rg.html" data-modulo="historico-rg">RG’s Salvos</a>
+      </div>
+
+      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuEditaveis')">
+        <span>Editáveis</span>
+        <span class="nav-arrow">></span>
+      </button>
+
+      <div class="submenu" id="submenuEditaveis">
+        <a href="atestado.html" data-modulo="atestado">ATESTADO</a>
+        <a href="historico.html" data-modulo="historico">Atestados Salvos</a>
+
+        <a href="receita.html" data-modulo="receita">RECEITA</a>
+        <a href="historico-receita.html" data-modulo="historico-receita">Receitas Salvas</a>
+
+        <a href="toxicologico.html" data-modulo="toxicologico">TOXICOLÓGICO</a>
+        <a href="historico-toxicologico.html" data-modulo="historico-toxicologico">Toxicológicos Salvos</a>
+
+        <a href="certificado.html" data-modulo="certificado">CERTIFICADO</a>
+        <a href="historico-certificado.html" data-modulo="historico-certificado">Certificados Salvos</a>
+
+        <a href="historico-escolar.html" data-modulo="historico-escolar">HISTÓRICO ESCOLAR</a>
+        <a href="historico-historico-escolar.html" data-modulo="historico-historico-escolar">Históricos Salvos</a>
+
+        <a href="crlv.html" data-modulo="crlv">CRLV (com qr-code)</a>
+        <a href="historico-crlv.html" data-modulo="historico-crlv">CRLV Salvos</a>
+      </div>
+
+      <a class="nav-link" href="loja.html" data-modulo="loja">Loja</a>
+      <a class="nav-link" href="recarga.html" data-modulo="recarga">Recarga</a>
+      <a class="nav-link" href="javascript:void(0)" onclick="logout()">Sair</a>
+
+    </div>
+
+  </div>
+
+  <div class="content">
+
+    <h1 class="page-title">Recarga</h1>
+
+    <div class="cardsRecarga">
+
+      <div class="cardValor" onclick="recargaRapida(20)">
+        <div class="valor">R$20</div>
+        <div class="credito">Recebe 40 créditos</div>
+      </div>
+
+      <div class="cardValor" onclick="recargaRapida(50)">
+        <div class="valor">R$50</div>
+        <div class="credito">Recebe 100 créditos</div>
+      </div>
+
+      <div class="cardValor" onclick="recargaRapida(100)">
+        <div class="valor">R$100</div>
+        <div class="credito">Recebe 200 créditos</div>
+      </div>
+
+      <div class="cardValor" onclick="recargaRapida(500)">
+        <div class="valor">R$500</div>
+        <div class="credito">Recebe 1000 créditos</div>
+      </div>
+
+    </div>
+
+    <div class="customRecarga">
+
+      <h3>Outro valor</h3>
+
+      <input id="valorCustom" type="number" min="20" step="1" inputmode="numeric" placeholder="Digite o valor (mínimo 20)">
+
+      <button type="button" onclick="recargaCustom()">Adicionar créditos</button>
+
+    </div>
+
+    <h3>Histórico de Recargas</h3>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Valor Pago</th>
+          <th>Créditos Recebidos</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+
+      <tbody id="historicoRecarga"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<script src="js/sidebar.js"></script>
+
+<script>
+function limparSessaoRecarga(){
+  localStorage.removeItem("usuario")
+  localStorage.removeItem("usuarioLogado")
+  localStorage.removeItem("usuarioToken")
+  localStorage.removeItem("ultimaRecarga")
+}
+
+async function logout(){
+  try{
+    const token = getTokenUsuario()
+
+    if(token){
+      await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        }
+      })
+    }
+  }catch(error){
+    console.error("Erro ao finalizar sessão:", error)
+  }
+
+  limparSessaoRecarga()
+  window.location = "login.html"
+}
+
+function mostrarModuloIndisponivel(event){
+  if(event){
+    event.preventDefault()
+  }
+  alert("Módulo não disponível no momento!")
+  return false
+}
+
+function configurarLinksIndisponiveis(){
+  const modulosDisponiveis = new Set([
+    "dashboard",
+    "cnh-digital",
+    "historico-cnh",
+    "atestado",
+    "historico",
+    "recarga"
+  ])
+
+  const links = document.querySelectorAll("[data-modulo]")
+
+  links.forEach((link) => {
+    const modulo = link.getAttribute("data-modulo")
+
+    if(!modulosDisponiveis.has(modulo)){
+      link.addEventListener("click", mostrarModuloIndisponivel)
+    }
+  })
+}
+
+function getUsuario(){
+  try{
+    return JSON.parse(localStorage.getItem("usuario"))
+  }catch{
+    return null
+  }
+}
+
+function getTokenUsuario(){
+  const usuario = getUsuario()
+
+  if(usuario && usuario.token){
+    return String(usuario.token).trim()
+  }
+
+  return localStorage.getItem("usuarioToken") || ""
+}
+
+function setUsuario(usuario){
+  localStorage.setItem("usuario", JSON.stringify(usuario))
+  if(usuario && usuario.usuario){
+    localStorage.setItem("usuarioLogado", usuario.usuario)
+  }
+  if(usuario && usuario.token){
+    localStorage.setItem("usuarioToken", usuario.token)
+  }
+}
+
+function getHeadersUsuario(extra = {}){
+  const token = getTokenUsuario()
+
+  return {
+    ...(token ? { Authorization: "Bearer " + token } : {}),
+    ...extra
+  }
+}
+
+async function tratarRespostaRecarga(res){
+  let data = {}
+
+  try{
+    data = await res.json()
+  }catch(error){
+    data = {}
+  }
+
+  if(res.status === 401){
+    limparSessaoRecarga()
+    alert(data.erro || "Sessão expirada. Faça login novamente.")
+    window.location = "login.html"
+    throw new Error(data.erro || "Sessão expirada")
+  }
+
+  if(res.status === 403){
+    alert(data.erro || "Acesso não autorizado")
+    throw new Error(data.erro || "Acesso não autorizado")
+  }
+
+  if(!res.ok){
+    throw new Error(data.erro || "Erro na requisição")
+  }
+
+  return data
+}
+
+function formatarData(dataIso){
+  if(!dataIso) return "-"
+  const d = new Date(dataIso)
+  if(isNaN(d.getTime())) return dataIso
+  return d.toLocaleString("pt-BR")
+}
+
+function formatarValor(valor){
+  return Number(valor || 0).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })
+}
+
+function carregarSaldoSidebarLocal(){
+  const usuario = getUsuario()
+  const saldo = Number(usuario?.saldo || 0)
+  const el = document.getElementById("saldoSidebar")
+  if(el){
+    el.textContent = "R$ " + formatarValor(saldo)
+  }
+}
+
+async function atualizarUsuarioLocal(){
+  try{
+    const usuario = getUsuario()
+    if(!usuario || !usuario.usuario) return
+
+    const res = await fetch("/api/usuario/" + encodeURIComponent(usuario.usuario), {
+      method: "GET",
+      headers: getHeadersUsuario({
+        "Accept": "application/json"
+      }),
+      credentials: "same-origin",
+      cache: "no-store"
+    })
+
+    const dados = await tratarRespostaRecarga(res)
+
+    const novoUsuario = {
+      ...usuario,
+      ...dados,
+      token: usuario.token || getTokenUsuario()
+    }
+
+    setUsuario(novoUsuario)
+    carregarSaldoSidebarLocal()
+
+    if(typeof carregarSaldoSidebar === "function"){
+      carregarSaldoSidebar()
+    }
+  }catch(err){
+    console.error("Erro ao atualizar usuário local:", err)
+  }
+}
+
+function montarLinhaHistorico(recarga){
+  const tr = document.createElement("tr")
+
+  const tdValor = document.createElement("td")
+  tdValor.textContent = "R$" + formatarValor(recarga.valor)
+
+  const tdCreditos = document.createElement("td")
+  tdCreditos.textContent = String(Number(recarga.creditos || 0))
+
+  const tdData = document.createElement("td")
+  tdData.textContent = formatarData(recarga.aprovada_em || recarga.criada_em || recarga.data)
+
+  tr.appendChild(tdValor)
+  tr.appendChild(tdCreditos)
+  tr.appendChild(tdData)
+
+  return tr
+}
+
+async function carregarHistoricoRecarga(){
+  const tabela = document.getElementById("historicoRecarga")
+  if(!tabela) return
+
+  tabela.innerHTML = `
+    <tr>
+      <td colspan="3">Carregando...</td>
+    </tr>
+  `
+
+  try{
+    const usuario = getUsuario()
+
+    if(!usuario || !usuario.usuario){
+      tabela.innerHTML = `
+        <tr>
+          <td colspan="3">Usuário não encontrado</td>
+        </tr>
+      `
+      return
+    }
+
+    const res = await fetch("/api/recarga/historico/" + encodeURIComponent(usuario.usuario), {
+      method: "GET",
+      headers: getHeadersUsuario({
+        "Accept": "application/json"
+      }),
+      credentials: "same-origin",
+      cache: "no-store"
+    })
+
+    const historico = await tratarRespostaRecarga(res)
+
+    tabela.innerHTML = ""
+
+    if(!Array.isArray(historico) || historico.length === 0){
+      tabela.innerHTML = `
+        <tr>
+          <td colspan="3">Nenhuma recarga encontrada</td>
+        </tr>
+      `
+      return
+    }
+
+    historico.slice().reverse().forEach((r) => {
+      tabela.appendChild(montarLinhaHistorico(r))
+    })
+  }catch(err){
+    console.error(err)
+    tabela.innerHTML = `
+      <tr>
+        <td colspan="3">Erro ao carregar histórico</td>
+      </tr>
+    `
+  }
+}
+
+async function iniciarRecarga(valor){
+  const usuario = getUsuario()
+
+  if(!usuario || !usuario.usuario){
+    alert("Usuário não encontrado")
+    return
+  }
+
+  const valorNumerico = Number(valor)
+
+  if(!valorNumerico || valorNumerico < 20){
+    alert("Valor mínimo é 20")
+    return
+  }
+
+  try{
+    const res = await fetch("/api/recarga/criar", {
+      method: "POST",
+      headers: getHeadersUsuario({
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }),
+      credentials: "same-origin",
+      cache: "no-store",
+      body: JSON.stringify({
+        usuario: usuario.usuario,
+        valor: valorNumerico
+      })
+    })
+
+    const resp = await tratarRespostaRecarga(res)
+
+    if(resp.init_point){
+      localStorage.setItem("ultimaRecarga", JSON.stringify({
+        checkout_id: resp.checkout_id || null,
+        reference_id: resp.reference_id || null,
+        valor: valorNumerico
+      }))
+
+      window.location.href = resp.init_point
+      return
+    }
+
+    alert("Link de pagamento não retornado")
+  }catch(err){
+    console.error(err)
+    alert(err.message || "Erro ao processar recarga")
+  }
+}
+
+function recargaRapida(valor){
+  iniciarRecarga(valor)
+}
+
+function recargaCustom(){
+  const campo = document.getElementById("valorCustom")
+  const valor = Number(campo.value)
+
+  if(!valor || valor < 20){
+    alert("Valor mínimo é 20")
+    return
+  }
+
+  iniciarRecarga(valor)
+  campo.value = ""
+}
+
+async function sincronizarRetornoPagamento(){
+  try{
+    const params = new URLSearchParams(window.location.search)
+
+    const checkoutIdUrl = params.get("checkout_id")
+    const referenceIdUrl = params.get("reference_id")
+
+    let ultimaRecarga = null
+
+    try{
+      ultimaRecarga = JSON.parse(localStorage.getItem("ultimaRecarga"))
+    }catch{
+      ultimaRecarga = null
+    }
+
+    const checkoutId = checkoutIdUrl || ultimaRecarga?.checkout_id || null
+    const referenceId = referenceIdUrl || ultimaRecarga?.reference_id || null
+
+    if(!checkoutId && !referenceId){
+      return
+    }
+
+    const res = await fetch("/api/recarga/sincronizar", {
+      method: "POST",
+      headers: getHeadersUsuario({
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }),
+      credentials: "same-origin",
+      cache: "no-store",
+      body: JSON.stringify({
+        checkout_id: checkoutId,
+        reference_id: referenceId
+      })
+    })
+
+    const resp = await tratarRespostaRecarga(res)
+
+    if(resp && resp.saldo !== undefined){
+      await atualizarUsuarioLocal()
+      await carregarHistoricoRecarga()
+      localStorage.removeItem("ultimaRecarga")
+      alert("Pagamento aprovado e créditos liberados com sucesso")
+    }
+
+    window.history.replaceState({}, document.title, window.location.pathname)
+  }catch(err){
+    console.error("Erro ao sincronizar pagamento:", err)
+  }
+}
+
+async function iniciarPaginaRecarga(){
+  const usuario = getUsuario()
+  const token = getTokenUsuario()
+
+  if(!usuario || !usuario.usuario || !token){
+    limparSessaoRecarga()
+    window.location = "login.html"
+    return
+  }
+
+  carregarSaldoSidebarLocal()
+  await atualizarUsuarioLocal()
+  await sincronizarRetornoPagamento()
+  await carregarHistoricoRecarga()
+}
+
+configurarLinksIndisponiveis()
+iniciarPaginaRecarga()
+</script>
+
+</body>
+
+</html>

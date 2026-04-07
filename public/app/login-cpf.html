@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar com CPF</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <div class="app-screen">
+    <div class="fundo fundo-tela-2"></div>
+
+    <div class="cpf-area">
+      <label class="cpf-label" for="cpf">CPF</label>
+
+      <input
+        id="cpf"
+        class="cpf-input"
+        type="text"
+        placeholder="Digite seu CPF"
+        maxlength="14"
+        inputmode="numeric"
+        oninput="mascaraCPF(this)"
+      >
+
+      <button class="btn-continuar" onclick="continuarCPF()">Continuar</button>
+    </div>
+  </div>
+
+  <script>
+    function limparSessaoApp() {
+      localStorage.removeItem("appLogado")
+      localStorage.removeItem("dadosUsuarioApp")
+      localStorage.removeItem("inicialApp")
+      localStorage.removeItem("cpfApp")
+    }
+
+    limparSessaoApp()
+
+    function mascaraCPF(input) {
+      let valor = input.value.replace(/\D/g, "")
+      valor = valor.slice(0, 11)
+
+      valor = valor.replace(/^(\d{3})(\d)/, "$1.$2")
+      valor = valor.replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+      valor = valor.replace(/\.(\d{3})(\d)/, ".$1-$2")
+
+      input.value = valor
+    }
+
+    function continuarCPF() {
+      const cpf = document.getElementById("cpf").value.trim()
+      const cpfNumeros = cpf.replace(/\D/g, "")
+
+      if (!cpf) {
+        alert("Digite seu CPF")
+        return
+      }
+
+      if (cpfNumeros.length !== 11) {
+        alert("Digite um CPF válido")
+        return
+      }
+
+      localStorage.setItem("cpfApp", cpfNumeros)
+      window.location.href = "senha.html"
+    }
+  </script>
+
+</body>
+</html>

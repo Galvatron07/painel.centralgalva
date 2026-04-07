@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Usuários</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <div class="sidebar">
+    <h2>Painel ADM</h2>
+
+    <button onclick="window.location='admin-dashboard.html'">
+      Dashboard
+    </button>
+
+    <button onclick="window.location='admin-usuarios.html'">
+      Ver Usuários
+    </button>
+
+    <button onclick="window.location='admin-criar.html'">
+      Criar Novo Usuário
+    </button>
+
+    <button onclick="logoutAdmin()">
+      Sair
+    </button>
+  </div>
+
+  <div class="main">
+
+    <div class="topbar">
+      <div>
+        <h2>Gerenciar Usuários</h2>
+        <p style="color:#94a3b8;margin-top:6px;">
+          Visualize os usuários cadastrados e acompanhe as informações principais
+        </p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabelaUsuarios" class="admin-table">
+        <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Saldo</th>
+            <th>Docs</th>
+            <th>Recarga Total</th>
+            <th>Status</th>
+            <th style="min-width: 420px;">Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="js/admin.js"></script>
+
+<script>
+verUsuarios()
+</script>
+
+</body>
+
+</html>

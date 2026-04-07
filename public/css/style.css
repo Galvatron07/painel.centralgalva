@@ -1,0 +1,1014 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter', Arial, Helvetica, sans-serif;
+}
+
+:root{
+--bg:#081120;
+--bg-2:#0d1728;
+--card:#111c31;
+--card-2:#16233d;
+--line:rgba(255,255,255,0.08);
+--text:#f8fafc;
+--muted:#94a3b8;
+--primary:#38bdf8;
+--primary-2:#2563eb;
+--success:#22c55e;
+--danger:#ef4444;
+--shadow:0 18px 45px rgba(0,0,0,0.28);
+--radius:18px;
+}
+
+body{
+background:
+radial-gradient(circle at top left, rgba(56,189,248,0.08), transparent 28%),
+radial-gradient(circle at right, rgba(37,99,235,0.08), transparent 24%),
+linear-gradient(180deg, #07101d 0%, #081120 100%);
+color:var(--text);
+min-height:100vh;
+}
+
+/* LOGIN */
+
+.login-container{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:24px;
+}
+
+.login-box{
+width:100%;
+max-width:420px;
+background:rgba(17,28,49,0.92);
+backdrop-filter:blur(12px);
+border:1px solid var(--line);
+border-radius:24px;
+padding:34px 28px;
+box-shadow:var(--shadow);
+}
+
+.login-box h1{
+text-align:center;
+font-size:30px;
+font-weight:700;
+letter-spacing:-0.5px;
+margin-bottom:10px;
+}
+
+.login-subtitle{
+text-align:center;
+color:var(--muted);
+font-size:14px;
+margin-bottom:26px;
+}
+
+.login-box input{
+width:100%;
+padding:14px 16px;
+margin-bottom:12px;
+background:#0b1527;
+border:1px solid rgba(255,255,255,0.08);
+border-radius:14px;
+outline:none;
+color:var(--text);
+font-size:15px;
+transition:0.2s ease;
+}
+
+.login-box input::placeholder{
+color:#7c8aa5;
+}
+
+.login-box input:focus{
+border-color:rgba(56,189,248,0.55);
+box-shadow:0 0 0 4px rgba(56,189,248,0.10);
+}
+
+.login-box button{
+width:100%;
+padding:14px;
+margin-top:6px;
+background:linear-gradient(135deg, var(--primary), var(--primary-2));
+border:none;
+color:white;
+font-size:15px;
+font-weight:700;
+border-radius:14px;
+cursor:pointer;
+transition:0.2s ease;
+box-shadow:0 12px 25px rgba(37,99,235,0.26);
+}
+
+.login-box button:hover{
+transform:translateY(-1px);
+filter:brightness(1.05);
+}
+
+.login-switch{
+margin-top:14px;
+text-align:center;
+color:var(--muted);
+font-size:14px;
+cursor:pointer;
+transition:0.2s ease;
+}
+
+.login-switch:hover{
+color:var(--primary);
+}
+
+.login-logo{
+width:70px;
+height:70px;
+border-radius:20px;
+margin:0 auto 18px auto;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+font-weight:700;
+background:linear-gradient(135deg, rgba(56,189,248,0.15), rgba(37,99,235,0.18));
+border:1px solid rgba(255,255,255,0.08);
+color:#e0f2fe;
+}
+
+/* LAYOUT ADMIN */
+
+.layout{
+display:flex;
+min-height:100vh;
+}
+
+.sidebar{
+width:240px;
+background:linear-gradient(180deg,#091425 0%, #0b162b 100%);
+padding:22px 16px;
+transition:0.3s;
+border-right:1px solid rgba(255,255,255,0.06);
+position:fixed;
+left:0;
+top:0;
+height:100vh;
+overflow-y:auto;
+}
+
+.sidebar h2,
+.sidebar h3{
+font-size:24px;
+font-weight:700;
+margin-bottom:24px;
+letter-spacing:-0.5px;
+}
+
+.sidebar button{
+width:100%;
+padding:13px 14px;
+margin-bottom:10px;
+border:none;
+background:#132038;
+color:#fff;
+border-radius:14px;
+cursor:pointer;
+text-align:left;
+font-size:14px;
+font-weight:600;
+transition:0.2s ease;
+border:1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar button:hover{
+background:#1a2b49;
+transform:translateY(-1px);
+}
+
+.main{
+margin-left:240px;
+padding:30px;
+width:calc(100% - 240px);
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+gap:16px;
+}
+
+.topbar h2{
+font-size:28px;
+font-weight:700;
+letter-spacing:-0.4px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+}
+
+.card{
+background:linear-gradient(180deg, rgba(19,32,56,0.98), rgba(15,25,43,0.98));
+padding:22px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,0.06);
+box-shadow:var(--shadow);
+}
+
+.card h3{
+font-size:15px;
+color:var(--muted);
+margin-bottom:12px;
+font-weight:600;
+}
+
+.card p{
+font-size:30px;
+font-weight:700;
+letter-spacing:-0.7px;
+}
+
+.top-users{
+margin-top:24px;
+background:linear-gradient(180deg, rgba(19,32,56,0.98), rgba(15,25,43,0.98));
+border:1px solid rgba(255,255,255,0.06);
+border-radius:20px;
+padding:22px;
+box-shadow:var(--shadow);
+}
+
+.top-users h3{
+margin-bottom:14px;
+font-size:18px;
+}
+
+.top-users ul{
+list-style:none;
+padding-left:0;
+}
+
+.top-users li{
+padding:12px 14px;
+background:#101a2e;
+border:1px solid rgba(255,255,255,0.05);
+border-radius:14px;
+margin-bottom:10px;
+color:#dbeafe;
+}
+
+.avisos{
+margin-top:30px;
+background:#111c31;
+padding:22px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,0.06);
+box-shadow:var(--shadow);
+}
+
+.menu-btn{
+display:none;
+font-size:22px;
+cursor:pointer;
+}
+
+a{
+color:inherit;
+}
+
+@media (max-width:900px){
+.sidebar{
+left:-260px;
+z-index:1000;
+}
+
+.sidebar.active{
+left:0;
+}
+
+.menu-btn{
+display:block;
+}
+
+.main{
+margin-left:0;
+width:100%;
+padding:20px;
+}
+
+.login-box{
+padding:28px 20px;
+}
+}
+
+.table-wrap{
+background:linear-gradient(180deg, rgba(18,32,58,0.98), rgba(14,25,45,0.98));
+padding:18px;
+border-radius:20px;
+box-shadow:0 16px 34px rgba(0,0,0,0.22);
+border:1px solid rgba(255,255,255,0.06);
+overflow:auto;
+margin-top:16px;
+}
+
+.form-card{
+max-width:780px;
+background:linear-gradient(180deg, rgba(18,32,58,0.98), rgba(14,25,45,0.98));
+padding:26px;
+border-radius:22px;
+box-shadow:0 16px 34px rgba(0,0,0,0.22);
+border:1px solid rgba(255,255,255,0.06);
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:14px;
+}
+
+.form-group{
+display:flex;
+flex-direction:column;
+margin-bottom:14px;
+}
+
+.form-group label{
+font-size:14px;
+font-weight:600;
+margin-bottom:8px;
+color:#dbeafe;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+width:100%;
+padding:14px 15px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,0.08);
+background:#0b1527;
+color:#fff;
+font-size:14px;
+outline:none;
+transition:.2s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder{
+color:#8391aa;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+border-color:rgba(56,189,248,0.55);
+box-shadow:0 0 0 4px rgba(56,189,248,0.10);
+}
+
+.form-actions{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-top:18px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-success{
+padding:12px 16px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:700;
+font-size:14px;
+transition:.2s ease;
+}
+
+.btn-primary{
+background:linear-gradient(135deg, #38bdf8, #2563eb);
+color:#fff;
+box-shadow:0 12px 25px rgba(37,99,235,0.22);
+}
+
+.btn-secondary{
+background:#1a2a45;
+color:#e5eefc;
+border:1px solid rgba(255,255,255,0.06);
+}
+
+.btn-danger{
+background:#ef4444;
+color:#fff;
+}
+
+.btn-success{
+background:#16a34a;
+color:#fff;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-danger:hover,
+.btn-success:hover{
+transform:translateY(-1px);
+filter:brightness(1.04);
+}
+
+.admin-table{
+width:100%;
+table-layout:fixed;
+}
+
+.admin-table th,
+.admin-table td{
+padding:16px 18px;
+vertical-align:middle;
+}
+
+.admin-table th:nth-child(1),
+.admin-table td:nth-child(1){
+width:18%;
+}
+
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2){
+width:14%;
+}
+
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3){
+width:10%;
+text-align:center;
+}
+
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4){
+width:16%;
+}
+
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5){
+width:12%;
+}
+
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6){
+width:30%;
+}
+
+.acoes-wrap{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+}
+
+.btn-danger-outline{
+padding:12px 16px;
+border-radius:12px;
+cursor:pointer;
+font-weight:700;
+font-size:14px;
+transition:.2s ease;
+background:transparent;
+color:#fca5a5;
+border:1px solid rgba(239,68,68,0.45);
+}
+
+.btn-danger-outline:hover{
+transform:translateY(-1px);
+background:rgba(239,68,68,0.10);
+}
+
+.status{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:7px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+min-width:82px;
+}
+
+.status.ativo{
+background:rgba(34,197,94,0.15);
+color:#86efac;
+border:1px solid rgba(34,197,94,0.25);
+}
+
+.status.inativo{
+background:rgba(239,68,68,0.12);
+color:#fca5a5;
+border:1px solid rgba(239,68,68,0.22);
+}
+
+/* GRÁFICO DO DASHBOARD */
+
+.grafico-box{
+margin-top:24px;
+background:linear-gradient(180deg, rgba(18,32,58,0.98), rgba(14,25,45,0.98));
+padding:22px;
+border-radius:20px;
+box-shadow:0 16px 34px rgba(0,0,0,0.22);
+border:1px solid rgba(255,255,255,0.06);
+height:420px;
+}
+
+.grafico-box h3{
+margin:0 0 6px 0;
+font-size:20px;
+color:#f8fafc;
+}
+
+.grafico-subtitulo{
+margin:0 0 18px 0;
+font-size:14px;
+color:#94a3b8;
+}
+
+#graficoRecargas{
+width:100% !important;
+height:320px !important;
+}
+
+.categoria-extra-linha{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:8px;
+}
+
+.categoria-extra-linha input{
+width:100%;
+padding:14px 15px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,0.08);
+background:#0b1527;
+color:#fff;
+font-size:14px;
+outline:none;
+transition:.2s ease;
+}
+
+/* AJUSTE DA TELA CNH DIGITAL */
+
+.cnh-content{
+margin-left:290px;
+width:calc(100% - 290px);
+padding:30px;
+box-sizing:border-box;
+}
+
+.cnh-form-card{
+max-width:1100px;
+width:100%;
+margin:0;
+}
+
+.cnh-form-grid{
+display:grid;
+grid-template-columns:repeat(2, minmax(260px, 1fr));
+gap:16px;
+align-items:start;
+}
+
+.cnh-full{
+grid-column:1 / -1;
+}
+
+.cnh-form-card .form-group{
+min-width:0;
+}
+
+.cnh-form-card .form-group input,
+.cnh-form-card .form-group select,
+.cnh-form-card .form-group textarea{
+width:100%;
+}
+
+@media (max-width: 900px){
+.cnh-content{
+margin-left:0;
+width:100%;
+padding:18px;
+}
+
+.cnh-form-grid{
+grid-template-columns:1fr;
+}
+
+.cnh-full{
+grid-column:auto;
+}
+}
+
+const categoriasFixas = ["A", "A1", "B", "B1", "C", "C1", "D", "D1", "BE", "CE", "C1E", "DE", "D1E", "ACC"]
+
+function logout() {
+  localStorage.removeItem("usuario")
+  localStorage.removeItem("usuarioLogado")
+  window.location = "login.html"
+}
+
+function getUsuarioLogado() {
+  let usuario = null
+
+  try {
+    usuario = JSON.parse(localStorage.getItem("usuario"))
+  } catch (e) {
+    usuario = null
+  }
+
+  if (usuario && usuario.usuario) return usuario.usuario
+  return localStorage.getItem("usuarioLogado") || ""
+}
+
+async function inicializarCnhDigital() {
+  const usuarioLogado = getUsuarioLogado()
+
+  if (!usuarioLogado) {
+    window.location = "login.html"
+    return
+  }
+
+  try {
+    const res = await fetch("/api/usuario/" + encodeURIComponent(usuarioLogado))
+    const data = await res.json()
+
+    if (!data.erro) {
+      const saldoSidebar = document.getElementById("saldoSidebar")
+      if (saldoSidebar) {
+        saldoSidebar.innerText = "R$ " + Number(data.saldo || 0).toFixed(2).replace(".", ",")
+      }
+
+      localStorage.setItem("usuario", JSON.stringify(data))
+      localStorage.setItem("usuarioLogado", data.usuario)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+function randomDigits(qtd) {
+  let out = ""
+  for (let i = 0; i < qtd; i++) {
+    out += Math.floor(Math.random() * 10)
+  }
+  return out
+}
+
+function gerarNumeroEspelho() {
+  document.getElementById("numeroEspelho").value = randomDigits(10)
+}
+
+function gerarCodigoValidacao() {
+  document.getElementById("codigoValidacao").value = randomDigits(11)
+}
+
+function gerarNumeroRegistro() {
+  document.getElementById("numeroRegistro").value = "0" + randomDigits(10)
+}
+
+function gerarRenach() {
+  const uf = (
+    document.getElementById("ufCnh").value ||
+    document.getElementById("ufEmissao").value ||
+    "SP"
+  ).toUpperCase()
+
+  document.getElementById("renach").value = uf + randomDigits(9)
+}
+
+function arquivoParaBase64(inputId) {
+  return new Promise((resolve) => {
+    const input = document.getElementById(inputId)
+    const file = input && input.files && input.files[0]
+
+    if (!file) {
+      resolve("")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = () => resolve("")
+    reader.readAsDataURL(file)
+  })
+}
+
+function adicionarCategoriaExtra() {
+  const wrap = document.getElementById("categoriasExtrasWrap")
+  const atuais = wrap.querySelectorAll(".categoria-extra-linha").length
+
+  if (atuais >= categoriasFixas.length) {
+    alert("Você já adicionou o máximo de categorias.")
+    return
+  }
+
+  const categoria = categoriasFixas[atuais]
+
+  const linha = document.createElement("div")
+  linha.className = "categoria-extra-linha"
+  linha.innerHTML = `
+    <select class="catExtraNome" disabled>
+      <option value="${categoria}" selected>${categoria}</option>
+    </select>
+    <input class="catExtraValidade" placeholder="dd/mm/aaaa">
+    <button type="button" class="btn-remover-cat" onclick="removerCategoriaExtra(this)">Remover</button>
+  `
+
+  wrap.appendChild(linha)
+}
+
+function removerCategoriaExtra(botao) {
+  const linha = botao.closest(".categoria-extra-linha")
+  if (!linha) return
+  linha.remove()
+  reordenarCategoriasExtras()
+}
+
+function reordenarCategoriasExtras() {
+  const linhas = document.querySelectorAll("#categoriasExtrasWrap .categoria-extra-linha")
+
+  linhas.forEach((linha, i) => {
+    const select = linha.querySelector(".catExtraNome")
+    if (select) {
+      select.innerHTML = `<option value="${categoriasFixas[i]}" selected>${categoriasFixas[i]}</option>`
+    }
+  })
+}
+
+async function criarCnhDigital() {
+  const usuario = getUsuarioLogado()
+
+  if (!usuario) {
+    alert("Usuário não encontrado")
+    return
+  }
+
+  try {
+    const categoriasExtrasNomes = document.querySelectorAll(".catExtraNome")
+    const categoriasExtrasValidades = document.querySelectorAll(".catExtraValidade")
+
+    const categoriasAdicionais = []
+
+    categoriasExtrasNomes.forEach((campoNome, i) => {
+      const nome = campoNome.value.trim()
+      const validade = categoriasExtrasValidades[i] ? categoriasExtrasValidades[i].value.trim() : ""
+
+      if (nome || validade) {
+        categoriasAdicionais.push({ nome, validade })
+      }
+    })
+
+    const fotoRosto = await arquivoParaBase64("fotoRosto")
+    const fotoAssinatura = await arquivoParaBase64("fotoAssinatura")
+
+    const payload = {
+      usuario,
+      nomeCompleto: document.getElementById("nomeCompleto").value.trim(),
+      primeiraHabilitacao: document.getElementById("primeiraHabilitacao").value.trim(),
+      dataNascimento: document.getElementById("dataNascimento").value.trim(),
+      cidadeNascimento: document.getElementById("cidadeNascimento").value.trim(),
+      ufNascimento: document.getElementById("ufNascimento").value.trim(),
+      dataEmissao: document.getElementById("dataEmissao").value.trim(),
+      validade: document.getElementById("validade").value.trim(),
+      tipoDocumento: document.getElementById("tipoDocumento").value.trim(),
+      numeroDocumento: document.getElementById("numeroDocumento").value.trim(),
+      orgaoEmissor: document.getElementById("orgaoEmissor").value.trim(),
+      ufEmissao: document.getElementById("ufEmissao").value.trim(),
+      cpf: document.getElementById("cpf").value.trim(),
+      numeroRegistro: document.getElementById("numeroRegistro").value.trim(),
+      numeroFormulario: document.getElementById("numeroEspelho").value.trim(),
+      categoria: document.getElementById("categoria").value.trim(),
+      nacionalidade: document.getElementById("nacionalidade").value.trim(),
+      nomePai: document.getElementById("nomePai").value.trim(),
+      nomeMae: document.getElementById("nomeMae").value.trim(),
+      observacoes: document.getElementById("observacoes").value.trim(),
+      codigoSeguranca: document.getElementById("codigoValidacao").value.trim(),
+      cidadeEmissao: document.getElementById("cidadeEmissao").value.trim(),
+      renach: document.getElementById("renach").value.trim(),
+      fotoRosto,
+      fotoAssinatura,
+      sexo: document.getElementById("sexo").value.trim(),
+      ufCnh: document.getElementById("ufCnh").value.trim(),
+      ufLocalHabilitacao: document.getElementById("ufLocalHabilitacao").value.trim(),
+      categoriasAdicionais
+    }
+
+    const res = await fetch("/api/cnh-digital/criar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+
+    if (!data.ok) {
+      alert(data.erro || "Erro ao criar cadastro")
+      return
+    }
+
+    const resultado = document.getElementById("resultadoCnh")
+    resultado.innerHTML = `
+      <div style="padding:14px;border:1px solid rgba(255,255,255,0.08);border-radius:14px;background:#0b1527;">
+        <div><strong>ID:</strong> ${data.id}</div>
+        <div style="margin-top:8px;"><strong>Expira em:</strong> ${new Date(data.expiraEm).toLocaleString()}</div>
+        <div style="margin-top:8px;"><strong>URL de validação:</strong><br>${data.urlValidacao}</div>
+        <div style="margin-top:8px;"><strong>Saldo restante:</strong> R$ ${Number(data.saldo || 0).toFixed(2).replace(".", ",")}</div>
+      </div>
+    `
+
+    const saldoSidebar = document.getElementById("saldoSidebar")
+    if (saldoSidebar) {
+      saldoSidebar.innerText = "R$ " + Number(data.saldo || 0).toFixed(2).replace(".", ",")
+    }
+
+    alert("Cadastro criado com sucesso")
+  } catch (error) {
+    console.error(error)
+    alert("Erro ao criar cadastro")
+  }
+}
+
+/* FORMULÁRIO CNH IGUAL AO PRINT */
+
+.cnh-alerta{
+display:flex;
+flex-direction:column;
+gap:6px;
+padding:16px 18px;
+margin-bottom:22px;
+border-radius:14px;
+background:#f5e6c7;
+border:1px solid #f3ba3b;
+color:#d96500;
+}
+
+.campo-obrigatorio{
+color:#ff3b30;
+font-weight:700;
+}
+
+.field-help{
+font-size:12px;
+color:#7b8798;
+margin-top:-4px;
+margin-bottom:8px;
+}
+
+.section-title-like{
+margin-top:4px;
+margin-bottom:-4px;
+}
+
+.section-title-like label{
+font-size:28px;
+font-weight:700;
+color:#223041;
+}
+
+.cnh-half{
+grid-column:span 1;
+}
+
+.cnh-third{
+grid-column:span 1;
+}
+
+.field-with-button{
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+.field-with-button input{
+flex:1;
+}
+
+.mini-gerar-btn{
+height:36px;
+padding:0 14px;
+border:none;
+border-radius:8px;
+background:#1e88ff;
+color:#fff;
+font-weight:700;
+cursor:pointer;
+}
+
+.mini-gerar-btn.abaixo{
+margin-top:8px;
+width:fit-content;
+}
+
+.categorias-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+margin-bottom:14px;
+flex-wrap:wrap;
+}
+
+.categorias-wrap{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.categoria-extra-linha{
+display:grid;
+grid-template-columns:70px 1fr 110px;
+gap:10px;
+align-items:center;
+}
+
+.categoria-extra-linha select,
+.categoria-extra-linha input{
+width:100%;
+padding:14px 15px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.08);
+background:#0b1527;
+color:#fff;
+font-size:14px;
+outline:none;
+transition:.2s ease;
+}
+
+.btn-remover-cat{
+height:44px;
+border:none;
+border-radius:10px;
+background:#ff3b30;
+color:#fff;
+font-weight:700;
+cursor:pointer;
+}
+
+.form-actions.centralizado{
+justify-content:center;
+margin-top:28px;
+}
+
+.btn-criar-cnh{
+min-width:145px;
+height:48px;
+font-size:17px;
+border-radius:12px;
+background:linear-gradient(135deg, #5d5fe8, #9c27ff);
+}
+
+.cnh-form-card textarea{
+width:100%;
+padding:14px 15px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.08);
+background:#0b1527;
+color:#fff;
+font-size:14px;
+outline:none;
+resize:vertical;
+min-height:120px;
+}
+
+@media (max-width: 980px){
+.cnh-form-grid{
+grid-template-columns:1fr 1fr;
+}
+
+.cnh-third{
+grid-column:span 1;
+}
+}
+
+@media (max-width: 760px){
+.cnh-form-grid{
+grid-template-columns:1fr;
+}
+
+.cnh-half,
+.cnh-third,
+.cnh-full{
+grid-column:auto;
+}
+
+.categoria-extra-linha{
+grid-template-columns:1fr;
+}
+
+.field-with-button{
+flex-direction:column;
+align-items:stretch;
+}
+}

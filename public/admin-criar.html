@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criar Usuário</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <div class="sidebar">
+    <h2>Painel ADM</h2>
+
+    <button onclick="window.location='admin-dashboard.html'">
+      Dashboard
+    </button>
+
+    <button onclick="window.location='admin-usuarios.html'">
+      Ver Usuários
+    </button>
+
+    <button onclick="window.location='admin-criar.html'">
+      Criar Novo Usuário
+    </button>
+
+    <button onclick="logoutAdmin()">
+      Sair
+    </button>
+  </div>
+
+  <div class="main">
+
+    <div class="topbar">
+      <div>
+        <h2>Criar Novo Usuário</h2>
+        <p style="color:#94a3b8;margin-top:6px;">
+          Preencha os dados abaixo para cadastrar um novo usuário no sistema
+        </p>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="novoEmail">Email do usuário</label>
+          <input id="novoEmail" type="email" placeholder="Digite o email do usuário">
+        </div>
+
+        <div class="form-group">
+          <label for="novaSenha">Senha</label>
+          <input id="novaSenha" type="password" placeholder="Digite a senha">
+        </div>
+
+        <div class="form-group" style="grid-column:1 / -1;">
+          <label for="novoSaldo">Saldo inicial (opcional)</label>
+          <input id="novoSaldo" placeholder="Digite o saldo inicial">
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" onclick="criarUsuario()">
+          Criar Usuário
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>

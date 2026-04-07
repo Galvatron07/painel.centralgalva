@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Controle</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body onload="carregarDashboard()">
+
+<div class="layout">
+
+<div class="sidebar">
+
+<h2>Painel ADM</h2>
+
+<button onclick="window.location='admin-dashboard.html'">
+Dashboard
+</button>
+
+<button onclick="window.location='admin-usuarios.html'">
+Ver Usuários
+</button>
+
+<button onclick="window.location='admin-criar.html'">
+Criar Novo Usuário
+</button>
+
+<button onclick="window.location='admin-modelos.html'">
+Modelos
+</button>
+
+<button onclick="logoutAdmin()">
+Sair
+</button>
+
+</div>
+
+<div class="main">
+
+<div class="topbar">
+<div>
+<h2>Painel de Controle</h2>
+<p style="color:#94a3b8;margin-top:6px;">Visão geral do sistema administrativo</p>
+</div>
+</div>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total de documentos</h3>
+<p id="totalDocs">0</p>
+</div>
+
+<div class="card">
+<h3>Usuários ativos</h3>
+<p id="usuariosAtivos">0</p>
+</div>
+
+<div class="card">
+<h3>Usuários inativos</h3>
+<p id="usuariosInativos">0</p>
+</div>
+
+<div class="card">
+<h3>Recargas totais</h3>
+<p id="recargas30">R$ 0,00</p>
+</div>
+
+</div>
+
+<div class="grafico-box">
+<h3>Vendas / Recargas por Usuário</h3>
+<p class="grafico-subtitulo">Total acumulado por usuário</p>
+<canvas id="graficoRecargas"></canvas>
+</div>
+
+<div class="top-users">
+<h3>Top 3 usuários que mais emitem documentos</h3>
+<ul id="topUsuarios"></ul>
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>
