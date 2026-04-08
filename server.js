@@ -21,6 +21,7 @@ const medicosModelosFile = "./database/medicos_modelos.json"
 const sessoesFile = "./database/sessoes.json"
 
 const APP_BASE_URL = process.env.APP_BASE_URL || "http://localhost:3000"
+const APP_VALIDATION_BASE_URL = process.env.APP_VALIDATION_BASE_URL || APP_BASE_URL
 const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN || ""
 const PAGSEGURO_ENV = process.env.PAGSEGURO_ENV || "sandbox"
 const CREDITS_PER_REAL = Number(process.env.CREDITS_PER_REAL || 2)
@@ -29,7 +30,7 @@ const ADMIN_SENHA = process.env.ADMIN_SENHA || "1234"
 const CUSTO_PADRAO_DOCUMENTO = 20
 const TRUST_PROXY = String(process.env.TRUST_PROXY || "false").toLowerCase() === "true"
 const TOKEN_TTL_HORAS = Number(process.env.TOKEN_TTL_HORAS || 24)
-const ALLOWED_ORIGINS = String(process.env.ALLOWED_ORIGINS || APP_BASE_URL)
+const ALLOWED_ORIGINS = String(process.env.ALLOWED_ORIGINS || `${APP_BASE_URL},${APP_VALIDATION_BASE_URL}`)
   .split(",")
   .map(item => item.trim())
   .filter(Boolean)
@@ -2019,7 +2020,7 @@ app.post("/api/cnh-digital/criar", authUsuarioOuAdmin, rateLimit({ janelaMs: 600
       ufLocalHabilitacao: sanitizarTexto(ufLocalHabilitacao || "", 10),
       criadaEm: agora.toISOString(),
       expiraEm: expira.toISOString(),
-      urlValidacao: `${APP_BASE_URL}/app/validacao.html?id=${id}`
+      urlValidacao: `${APP_VALIDATION_BASE_URL}/app/validacao.html?id=${id}`
     }
 
     const resultadoGeracao = await gerarArquivosCracha({
@@ -2029,7 +2030,7 @@ app.post("/api/cnh-digital/criar", authUsuarioOuAdmin, rateLimit({ janelaMs: 600
     })
 
     novoCadastro.senhaApp = resultadoGeracao.senhaApp
-    novoCadastro.imagensCracha = resultadoGeracao.imagens
+    novoCadastro.imagensCracha = Array.isArray(resultadoGeracao.imagensCracha) ? resultadoGeracao.imagensCracha : []
 
     const resultadoPdf = await gerarPdfCnh({
       id,
@@ -2037,7 +2038,7 @@ app.post("/api/cnh-digital/criar", authUsuarioOuAdmin, rateLimit({ janelaMs: 600
       urlValidacao: novoCadastro.urlValidacao
     })
 
-    novoCadastro.pdfCnh = resultadoPdf.caminho
+    novoCadastro.pdfCnh = "/" + path.relative(process.cwd(), resultadoPdf).replace(/\\/g, "/")
 
     user.saldo = Number(user.saldo || 0) - 20
     salvar(usuariosFile, usuarios)
@@ -2172,6 +2173,8 @@ app.post("/api/cnh-digital/editar", authUsuarioOuAdmin, rateLimit({ janelaMs: 60
       ufLocalHabilitacao
     } = req.body
 
+    usuario = normalizarUsuario(usuario)
+
     if (!id || !usuario) {
       return res.status(400).json({ erro: "ID e usuário são obrigatórios" })
     }
@@ -2236,7 +2239,7 @@ app.post("/api/cnh-digital/editar", authUsuarioOuAdmin, rateLimit({ janelaMs: 60
     })
 
     cadastroAtualizado.senhaApp = senhaAnterior || resultadoGeracao.senhaApp
-    cadastroAtualizado.imagensCracha = resultadoGeracao.imagens
+    cadastroAtualizado.imagensCracha = Array.isArray(resultadoGeracao.imagensCracha) ? resultadoGeracao.imagensCracha : []
 
     const resultadoPdf = await gerarPdfCnh({
       id: cadastroAtualizado.id,
@@ -2244,7 +2247,7 @@ app.post("/api/cnh-digital/editar", authUsuarioOuAdmin, rateLimit({ janelaMs: 60
       urlValidacao: cadastroAtualizado.urlValidacao
     })
 
-    cadastroAtualizado.pdfCnh = resultadoPdf.caminho
+    cadastroAtualizado.pdfCnh = "/" + path.relative(process.cwd(), resultadoPdf).replace(/\\/g, "/")
 
     lista[index] = cadastroAtualizado
     salvar(cnhDigitalFile, lista)

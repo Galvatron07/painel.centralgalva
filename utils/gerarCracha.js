@@ -209,7 +209,7 @@ async function gerarArquivosCracha({
 }) {
   garantirPasta(path.join(process.cwd(), "generated", "crachas"))
 
-  const senhaApp = gerarSenha4Digitos()
+  const senhaApp = String(dados?.senhaApp || "").trim() || gerarSenha4Digitos()
   const cpfFormatado = formatarCPF(dados.cpf)
 
   const out1 = path.join("generated", "crachas", `${id}-1.png`)
