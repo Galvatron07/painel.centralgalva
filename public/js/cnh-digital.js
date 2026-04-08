@@ -164,7 +164,6 @@ function formatarCPF(valor = "") {
   const numeros = String(valor || "").replace(/\D/g, "").slice(0, 11)
 
   if (!numeros) return ""
-
   if (numeros.length <= 3) return numeros
   if (numeros.length <= 6) return numeros.replace(/^(\d{3})(\d+)/, "$1.$2")
   if (numeros.length <= 9) return numeros.replace(/^(\d{3})(\d{3})(\d+)/, "$1.$2.$3")
@@ -190,6 +189,54 @@ function aplicarMascaraCpf() {
   })
 
   campo.value = formatarCPF(campo.value)
+}
+
+function formatarData(valor = "") {
+  const numeros = String(valor || "").replace(/\D/g, "").slice(0, 8)
+
+  if (!numeros) return ""
+  if (numeros.length <= 2) return numeros
+  if (numeros.length <= 4) return numeros.replace(/^(\d{2})(\d+)/, "$1/$2")
+
+  return numeros.replace(/^(\d{2})(\d{2})(\d+)/, "$1/$2/$3")
+}
+
+function aplicarMascaraDataNoCampo(campo) {
+  if (!campo || campo.dataset.mascaraDataAplicada === "1") return
+
+  campo.dataset.mascaraDataAplicada = "1"
+
+  campo.addEventListener("input", () => {
+    const posicao = campo.selectionStart || 0
+    const valorAntes = campo.value
+    campo.value = formatarData(campo.value)
+
+    const diferenca = campo.value.length - valorAntes.length
+    const novaPosicao = Math.max(0, posicao + diferenca)
+
+    try {
+      campo.setSelectionRange(novaPosicao, novaPosicao)
+    } catch (e) {}
+  })
+
+  campo.value = formatarData(campo.value)
+}
+
+function aplicarMascarasDatas() {
+  const idsDatas = [
+    "primeiraHabilitacao",
+    "dataNascimento",
+    "dataEmissao",
+    "validade"
+  ]
+
+  idsDatas.forEach((id) => {
+    const campo = document.getElementById(id)
+    aplicarMascaraDataNoCampo(campo)
+  })
+
+  const camposCategorias = document.querySelectorAll(".catExtraValidade")
+  camposCategorias.forEach((campo) => aplicarMascaraDataNoCampo(campo))
 }
 
 async function inicializarCnhDigital() {
@@ -227,6 +274,8 @@ async function inicializarCnhDigital() {
   if (wrap && wrap.querySelectorAll(".categoria-extra-linha").length === 0) {
     adicionarCategoriaExtra()
   }
+
+  aplicarMascarasDatas()
 }
 
 function randomDigits(qtd) {
@@ -300,16 +349,7 @@ function adicionarCategoriaExtra() {
   wrap.appendChild(linha)
 
   const novoCampoValidade = linha.querySelector(".catExtraValidade")
-  if (novoCampoValidade) {
-    novoCampoValidade.addEventListener("input", () => {
-      const inicio = novoCampoValidade.selectionStart
-      const fim = novoCampoValidade.selectionEnd
-      novoCampoValidade.value = String(novoCampoValidade.value || "").toUpperCase()
-      if (typeof inicio === "number" && typeof fim === "number") {
-        novoCampoValidade.setSelectionRange(inicio, fim)
-      }
-    })
-  }
+  aplicarMascaraDataNoCampo(novoCampoValidade)
 }
 
 function removerCategoriaExtra(botao) {
@@ -352,7 +392,7 @@ async function criarCnhDigital() {
 
     categoriasExtrasNomes.forEach((campoNome, i) => {
       const categoria = campoNome.value.trim().toUpperCase()
-      const validade = categoriasExtrasValidades[i] ? categoriasExtrasValidades[i].value.trim().toUpperCase() : ""
+      const validade = categoriasExtrasValidades[i] ? formatarData(categoriasExtrasValidades[i].value).trim().toUpperCase() : ""
 
       if (categoria || validade) {
         categoriasAdicionais.push({ categoria, validade })
@@ -365,12 +405,12 @@ async function criarCnhDigital() {
     const payload = {
       usuario,
       nomeCompleto: document.getElementById("nomeCompleto").value.trim().toUpperCase(),
-      primeiraHabilitacao: document.getElementById("primeiraHabilitacao").value.trim().toUpperCase(),
-      dataNascimento: document.getElementById("dataNascimento").value.trim().toUpperCase(),
+      primeiraHabilitacao: formatarData(document.getElementById("primeiraHabilitacao").value).trim().toUpperCase(),
+      dataNascimento: formatarData(document.getElementById("dataNascimento").value).trim().toUpperCase(),
       cidadeNascimento: document.getElementById("cidadeNascimento").value.trim().toUpperCase(),
       ufNascimento: document.getElementById("ufNascimento").value.trim().toUpperCase(),
-      dataEmissao: document.getElementById("dataEmissao").value.trim().toUpperCase(),
-      validade: document.getElementById("validade").value.trim().toUpperCase(),
+      dataEmissao: formatarData(document.getElementById("dataEmissao").value).trim().toUpperCase(),
+      validade: formatarData(document.getElementById("validade").value).trim().toUpperCase(),
       tipoDocumento: document.getElementById("tipoDocumento").value.trim().toUpperCase(),
       numeroDocumento: document.getElementById("numeroDocumento").value.trim().toUpperCase(),
       orgaoEmissor: document.getElementById("orgaoEmissor").value.trim().toUpperCase(),

@@ -254,118 +254,85 @@ module.exports = async function gerarPdfCnh({ id, dados, urlValidacao }) {
   texto(dados.codigoSeguranca, 215, 470, 5, false, corTexto)
   texto(dados.renach, 215, 465, 5, false, corTexto)
 
-  texto(dados.nomeCompleto, 356, 602, 7, false, corTexto)
-  textoMultilinha(dados.nomeMae, 356, 585, 6, false, corTexto, 28, 7)
-  textoMultilinha(dados.nomePai, 356, 565, 6, false, corTexto, 28, 7)
-  texto(dados.nacionalidade, 356, 545, 6, false, corTexto)
-  texto(cpfFormatado, 356, 529, 6, false, corTexto)
-  texto(dados.numeroRegistro, 356, 514, 6, false, corVermelha)
-  texto(String(dados.categoria || "").trim(), 356, 498, 6, true, corVermelha)
+  texto(dados.nacionalidade, 142, 655, 5, false, corTexto)
 
-  texto(montarDocumento(dados.numeroDocumento, dados.orgaoEmissor, dados.ufEmissao), 356, 482, 6, false, corTexto)
-  texto(normalizarData(dados.validade), 514, 514, 6, false, corVermelha)
-  texto(normalizarData(dados.dataEmissao), 514, 482, 6, false, corTexto)
-  texto(
-    `${normalizarData(dados.dataNascimento)}${dados.cidadeNascimento || dados.ufNascimento ? ", " : ""}${montarCidadeUf(dados.cidadeNascimento, dados.ufNascimento)}`,
-    514,
-    450,
-    6,
-    false,
-    corTexto
-  )
-  texto(normalizarData(dados.primeiraHabilitacao), 620, 514, 6, false, corTexto)
-  texto(getTipoDocumentoCracha(), 675, 514, 8, true, corTexto)
+  textoMultilinha(dados.nomePai, 145, 639, 6, false, corTexto, 25, 7)
+  textoMultilinha(dados.nomeMae, 145, 623, 6, false, corTexto, 25, 7)
 
-  texto(nomeEstadoPorUF(dados.ufEmissao || dados.ufCnh || dados.ufLocalHabilitacao || ""), 74, 469, 8, true, corTexto)
-  texto(dados.observacoes || "EAR", 74, 449, 6, false, corTexto)
-  texto(montarCidadeUf(dados.cidadeEmissao, dados.ufLocalHabilitacao || dados.ufEmissao), 74, 434, 6, false, corTexto)
+  texto(dados.observacoes, 74, 515, 7, false, corTexto)
 
-  texto(validade0, 372, 462, 5, false, corTexto)
-  texto(validade1, 392, 462, 5, false, corTexto)
-  texto(validade2, 412, 462, 5, false, corTexto)
-  texto(validade3, 432, 462, 5, false, corTexto)
-  texto(validade4, 452, 462, 5, false, corTexto)
-  texto(validade5, 472, 462, 5, false, corTexto)
-  texto(validade6, 492, 462, 5, false, corTexto)
-  texto(validade7, 512, 462, 5, false, corTexto)
-  texto(validade8, 532, 462, 5, false, corTexto)
-  texto(validade9, 552, 462, 5, false, corTexto)
-  texto(validade10, 572, 462, 5, false, corTexto)
-  texto(validade11, 592, 462, 5, false, corTexto)
-  texto(validade12, 612, 462, 5, false, corTexto)
-  texto(validade13, 632, 462, 5, false, corTexto)
+  texto(getTipoDocumentoCracha(), 256, 698, 9, true, corTexto)
 
-  texto(getLinhaMrz1(), 72, 416, 7, false, corTexto, fontMono)
-  texto(getLinhaMrz2(), 72, 404, 7, false, corTexto, fontMono)
-  texto(getLinhaMrz3(), 72, 392, 7, false, corTexto, fontMono)
+  texto(nomeEstadoPorUF(dados.ufEmissao || dados.ufCnh || dados.ufLocalHabilitacao || ""), 124, 437, 9, true, corTexto)
+  texto(`${dados.cidadeEmissao || ""}, ${dados.ufEmissao || ""}`, 73, 459, 5, false, corTexto)
 
-  const fotoRosto = await embedImageFromBase64(dados.fotoRosto)
-  if (fotoRosto) {
-    page.drawImage(fotoRosto, {
-      x: 604,
+  texto(getLinhaMrz1() + "<<<<<<<<", 87, 312, 8, false, corTexto, fontMono)
+  texto(getLinhaMrz2() + "<<<<<<<2<", 87, 300, 8, false, corTexto, fontMono)
+  texto(getLinhaMrz3() + "<<<<<<", 87, 288, 8, false, corTexto, fontMono)
+
+  texto(validade0, 128, 575, 4, false, corTexto)
+  texto(validade1, 128, 567, 4, false, corTexto)
+  texto(validade2, 128, 559, 4, false, corTexto)
+  texto(validade3, 128, 551, 4, false, corTexto)
+  texto(validade4, 128, 543, 4, false, corTexto)
+  texto(validade5, 128, 535, 4, false, corTexto)
+  texto(validade6, 229, 583, 4, false, corTexto)
+  texto(validade7, 229, 575, 4, false, corTexto)
+  texto(validade8, 229, 567, 4, false, corTexto)
+  texto(validade9, 229, 559, 4, false, corTexto)
+  texto(validade10, 229, 551, 4, false, corTexto)
+  texto(validade11, 229, 543, 4, false, corTexto)
+  texto(validade12, 229, 535, 4, false, corTexto)
+  texto(validade13, 128, 583, 4, false, corTexto)
+
+  const foto = await embedImageFromBase64(dados.fotoRosto)
+  if (foto) {
+    page.drawImage(foto, {
+      x: 74,
+      y: 633,
+      width: 61,
+      height: 82
+    })
+  }
+
+  const assinatura = await embedImageFromBase64(dados.fotoAssinatura)
+  if (assinatura) {
+    page.drawImage(assinatura, {
+      x: 74,
       y: 615,
-      width: 90,
-      height: 115
-    })
-
-    page.drawImage(fotoRosto, {
-      x: 604,
-      y: 333,
-      width: 90,
-      height: 115
+      width: 55,
+      height: 20
     })
   }
 
-  const fotoAssinatura = await embedImageFromBase64(dados.fotoAssinatura)
-  if (fotoAssinatura) {
-    page.drawImage(fotoAssinatura, {
-      x: 615,
-      y: 500,
-      width: 55,
-      height: 25
+  if (urlValidacao) {
+    const qrDataUrl = await QRCode.toDataURL(urlValidacao, {
+      margin: 1,
+      width: 220
     })
 
-    page.drawImage(fotoAssinatura, {
-      x: 115,
-      y: 610,
-      width: 55,
-      height: 25
-    })
-  }
-
-  const qrDataUrl = await QRCode.toDataURL(urlValidacao, {
-    errorCorrectionLevel: "M",
-    margin: 1,
-    width: 300
-  })
-
-  const qrMatch = qrDataUrl.match(/^data:image\/png;base64,(.+)$/)
-  if (qrMatch) {
-    const qrImage = await pdfDoc.embedPng(Buffer.from(qrMatch[1], "base64"))
+    const qrBase64 = qrDataUrl.split(",")[1]
+    const qrBytes = Buffer.from(qrBase64, "base64")
+    const qrImage = await pdfDoc.embedPng(qrBytes)
 
     page.drawImage(qrImage, {
-      x: 650,
-      y: 465,
-      width: 48,
-      height: 48
-    })
-
-    page.drawImage(qrImage, {
-      x: 650,
-      y: 183,
-      width: 48,
-      height: 48
+      x: 344,
+      y: 562,
+      width: 180,
+      height: 180
     })
   }
 
-  const outputDir = path.join(process.cwd(), "generated")
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true })
+  const pastaSaida = path.join(__dirname, "../generated/cnh-pdf")
+  if (!fs.existsSync(pastaSaida)) {
+    fs.mkdirSync(pastaSaida, { recursive: true })
   }
 
-  const outputPath = path.join(outputDir, `${id}.pdf`)
-  const pdfBytes = await pdfDoc.save()
-  fs.writeFileSync(outputPath, pdfBytes)
+  const nomeArquivo = `cnh_${id}.pdf`
+  const caminhoCompleto = path.join(pastaSaida, nomeArquivo)
 
-  return outputPath
+  const finalBytes = await pdfDoc.save()
+  fs.writeFileSync(caminhoCompleto, finalBytes)
+
+  return caminhoCompleto
 }

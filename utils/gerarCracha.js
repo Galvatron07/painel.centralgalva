@@ -17,8 +17,8 @@ function gerarSenha4Digitos() {
 }
 
 function abreviarNome(nome = "") {
-  const partes = nome.trim().split(/\s+/).filter(Boolean)
-  if (partes.length <= 2) return nome.toUpperCase()
+  const partes = String(nome || "").trim().split(/\s+/).filter(Boolean)
+  if (partes.length <= 2) return String(nome || "").toUpperCase()
 
   const primeiro = partes[0]
   const ultimo = partes[partes.length - 1]
@@ -291,58 +291,74 @@ async function gerarArquivosCracha({
     const nomeEstado = nomeEstadoPorUF(dados.ufEmissao || dados.ufCnh || dados.ufLocalHabilitacao || "")
     drawRotatedText(ctx, nomeEstado, 78, 460, 90, "bold 34px Arial", "#111")
 
-    const allCats = Array.isArray(dados.categoriasAdicionais) ? dados.categoriasAdicionais : []
+    const allCats = Array.isArray(dados.categoriasAdicionais)
+      ? dados.categoriasAdicionais.slice(0, 14)
+      : []
 
-    const posicoesCategorias = [
-      { x: 355, y: 442 },
-      { x: 375, y: 442 },
-      { x: 395, y: 442 },
-      { x: 415, y: 442 },
-      { x: 435, y: 442 },
-      { x: 455, y: 442 },
-      { x: 475, y: 442 },
-      { x: 495, y: 442 },
-      { x: 515, y: 442 },
-      { x: 535, y: 442 },
-      { x: 555, y: 442 },
-      { x: 575, y: 442 },
-      { x: 595, y: 442 },
-      { x: 615, y: 442 }
+    const posicoesValidades = [
+      { x: 660, y: 405, angle: 90, font: "18px Arial" },
+      { x: 627, y: 405, angle: 90, font: "18px Arial" },
+      { x: 595, y: 405, angle: 90, font: "18px Arial" },
+      { x: 560, y: 405, angle: 90, font: "18px Arial" },
+      { x: 525, y: 405, angle: 90, font: "18px Arial" },
+      { x: 490, y: 405, angle: 90, font: "18px Arial" },
+      { x: 695, y: 826, angle: 90, font: "18px Arial" },
+      { x: 660, y: 826, angle: 90, font: "18px Arial" },
+      { x: 627, y: 826, angle: 90, font: "18px Arial" },
+      { x: 595, y: 826, angle: 90, font: "18px Arial" },
+      { x: 560, y: 826, angle: 90, font: "18px Arial" },
+      { x: 525, y: 826, angle: 90, font: "18px Arial" },
+      { x: 490, y: 826, angle: 90, font: "18px Arial" },
+      { x: 695, y: 405, angle: 90, font: "18px Arial" }
     ]
 
-    allCats.forEach((cat, i) => {
-      if (!posicoesCategorias[i]) return
-      drawRotatedText(ctx, cat.validade || "", posicoesCategorias[i].x, posicoesCategorias[i].y, 90, "14px Arial", "#111")
+    allCats.forEach((c, i) => {
+      if (!c) return
+      if (!c.validade || !String(c.validade).trim()) return
+
+      const pos = posicoesValidades[i]
+      if (!pos) return
+
+      drawRotatedText(
+        ctx,
+        c.validade,
+        pos.x,
+        pos.y,
+        pos.angle,
+        pos.font,
+        "#111"
+      )
     })
 
-    drawRotatedText(ctx, dados.numeroDocumento || "", 74, 686, 90, "18px Courier New", "#111")
-    drawRotatedText(ctx, dados.ufEmissao || "", 74, 725, 90, "18px Courier New", "#111")
-    drawRotatedText(ctx, dados.orgaoEmissor || "", 74, 760, 90, "18px Courier New", "#111")
-
-    drawRotatedText(ctx, dados.numeroFormulario || "", 74, 795, 90, "18px Courier New", "#111")
-    drawRotatedText(ctx, String(cpfFormatado || "").replace(/\D/g, ""), 74, 840, 90, "18px Courier New", "#111")
-    drawRotatedText(ctx, abreviarNome(dados.nomeCompleto || "").replace(/\s+/g, "<"), 74, 885, 90, "18px Courier New", "#111")
+    drawRotatedText(ctx, dados.codigoSeguranca, 220, 755, 90, "22px Arial", "#111")
+    drawRotatedText(ctx, dados.renach, 195, 755, 90, "22px Arial", "#111")
   })
 
   await gerarLado(base3, out3, async (ctx) => {
-    drawRotatedText(ctx, dados.numeroFormulario, 50, 62, 0, "bold 45px Arial", "#111")
-    await drawImageBase64(ctx, qrDataUrl, 340, 370, 250, 250, 90)
-    drawRotatedText(ctx, senhaApp, 610, 470, 90, "bold 42px Arial", "#111")
+    const nomeLinha = abreviarNome(dados.nomeCompleto)
+    const linha1 = `${dados.numeroDocumento || ""}${dados.ufEmissao || ""}${dados.orgaoEmissor || ""}`.toUpperCase()
+    const linha2 = `${dados.numeroFormulario || ""}${String(dados.cpf || "").replace(/\D/g, "")}`
+
+    drawRotatedText(ctx, linha1 + "<<<<<<<<<", 310, 190, 90, "26px Courier New", "#111")
+    drawRotatedText(ctx, linha2 + "<<<<<<<2<", 275, 190, 90, "26px Courier New", "#111")
+    drawRotatedText(ctx, nomeLinha.replace(/\s+/g, "<") + "<<<<<<", 240, 190, 90, "26px Courier New", "#111")
   })
 
-  await gerarLado(base3, out4, async (ctx) => {
-    drawRotatedText(ctx, dados.numeroFormulario, 50, 62, 0, "bold 45px Arial", "#111")
-    await drawImageBase64(ctx, qrDataUrl, 340, 370, 250, 250, 90)
-    drawRotatedText(ctx, senhaApp, 610, 470, 90, "bold 42px Arial", "#111")
-  })
+  const canvas4 = createCanvas(450, 450)
+  const ctx4 = canvas4.getContext("2d")
+  const qrImg = await loadImage(qrDataUrl)
+  ctx4.fillStyle = "#ffffff"
+  ctx4.fillRect(0, 0, 450, 450)
+  ctx4.drawImage(qrImg, 22, 40, 405, 360)
+  fs.writeFileSync(out4, canvas4.toBuffer("image/png"))
 
   return {
     senhaApp,
     imagensCracha: [
-      "/" + out1.replace(/\\/g, "/"),
-      "/" + out2.replace(/\\/g, "/"),
-      "/" + out3.replace(/\\/g, "/"),
-      "/" + out4.replace(/\\/g, "/")
+      `/${out1.replace(/\\/g, "/")}`,
+      `/${out2.replace(/\\/g, "/")}`,
+      `/${out3.replace(/\\/g, "/")}`,
+      `/${out4.replace(/\\/g, "/")}`
     ]
   }
 }
