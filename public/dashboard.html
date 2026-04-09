@@ -8,13 +8,560 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https://wa.me; img-src 'self' data: blob: https://wa.me; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:; frame-ancestors 'self'; base-uri 'self'; form-action 'self'">
   <link rel="stylesheet" href="css/sidebar.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.18), transparent 25%),
+        radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.12), transparent 28%),
+        linear-gradient(135deg, #0b1220 0%, #0f172a 45%, #111827 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .content {
+      flex: 1;
+      min-width: 0;
+      padding: 28px;
+      position: relative;
+    }
+
+    .content::before {
+      content: "";
+      position: fixed;
+      top: -140px;
+      right: -140px;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.16), transparent 72%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .content::after {
+      content: "";
+      position: fixed;
+      bottom: -180px;
+      left: 280px;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.10), transparent 72%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+
+    .topbar-left {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.13);
+      border: 1px solid rgba(96, 165, 250, 0.18);
+      color: #93c5fd;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .badge-top::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.05;
+      color: #ffffff;
+      letter-spacing: -1px;
+    }
+
+    .topbar p {
+      margin: 12px 0 0;
+      color: #94a3b8;
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 720px;
+    }
+
+    .status-box {
+      min-width: 240px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.70);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.20);
+      color: #cbd5e1;
+      font-size: 13px;
+      text-align: right;
+      backdrop-filter: blur(10px);
+    }
+
+    .status-box strong {
+      display: block;
+      font-size: 15px;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.35fr 0.95fr;
+      gap: 22px;
+      padding: 30px;
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.94));
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      box-shadow: 0 24px 55px rgba(0, 0, 0, 0.28);
+      margin-bottom: 24px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -90px;
+      right: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.26), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      bottom: -100px;
+      left: -80px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-left,
+    .hero-right {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .hero-mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .hero-mini::before {
+      content: "✦";
+      color: #38bdf8;
+      font-size: 13px;
+    }
+
+    .hero h2 {
+      margin: 0 0 14px;
+      font-size: 34px;
+      line-height: 1.14;
+      color: #ffffff;
+      letter-spacing: -0.8px;
+      max-width: 700px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #94a3b8;
+      font-size: 15px;
+      line-height: 1.8;
+      max-width: 660px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 22px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+      transition: 0.22s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .hero-btn.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #ffffff;
+      box-shadow: 0 15px 30px rgba(37, 99, 235, 0.28);
+    }
+
+    .hero-btn.primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    .hero-btn.secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(148, 163, 184, 0.14);
+      color: #ffffff;
+    }
+
+    .hero-btn.secondary:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .hero-stats {
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero-stat {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      min-width: 0;
+    }
+
+    .hero-stat span {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #93c5fd;
+      margin-bottom: 8px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 28px;
+      color: #ffffff;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .hero-stat small {
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(30, 41, 59, 0.90));
+      border: 1px solid rgba(148, 163, 184, 0.10);
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.22);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: #93c5fd;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .card small {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #94a3b8;
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 24px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(17, 24, 39, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.10);
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.22);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .panel-header h3 {
+      margin: 0;
+      font-size: 21px;
+      color: #ffffff;
+    }
+
+    .panel-header p {
+      margin: 8px 0 0;
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 520px;
+    }
+
+    .panel-badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .shortcut-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .shortcut {
+      display: block;
+      text-decoration: none;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      transition: 0.22s ease;
+      color: inherit;
+    }
+
+    .shortcut:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(96, 165, 250, 0.22);
+    }
+
+    .shortcut strong {
+      display: block;
+      color: #ffffff;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .shortcut span {
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .shortcut small {
+      display: inline-block;
+      margin-top: 12px;
+      color: #7dd3fc;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .notice-text {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .support-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .support-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 0 18px;
+      transition: 0.22s ease;
+    }
+
+    .support-btn.whatsapp {
+      background: #25d366;
+      color: #ffffff;
+      box-shadow: 0 14px 28px rgba(37, 211, 102, 0.22);
+    }
+
+    .support-btn.whatsapp:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+    }
+
+    .support-btn.ghost {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      color: #ffffff;
+    }
+
+    .support-btn.ghost:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    @media (max-width: 1200px) {
+      .hero,
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .content {
+        padding: 76px 16px 18px;
+      }
+
+      .topbar h1 {
+        font-size: 28px;
+      }
+
+      .hero h2 {
+        font-size: 24px;
+      }
+
+      .card-grid,
+      .shortcut-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .panel,
+      .card {
+        border-radius: 20px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .hero-btn,
+      .support-btn {
+        width: 100%;
+      }
+
+      .status-box {
+        width: 100%;
+        text-align: left;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
+<button class="mobile-menu-btn" onclick="alternarSidebarMobile()">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharSidebarMobile()"></div>
+
 <div class="layout">
 
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
 
     <h2>CentralGalva</h2>
 
@@ -27,7 +574,7 @@
 
       <a class="nav-link" href="dashboard.html">Dashboard</a>
 
-      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuApps')">
+      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuApps', this)">
         <span>Aplicativos</span>
         <span class="nav-arrow">></span>
       </button>
@@ -40,7 +587,7 @@
         <a href="historico-rg.html" data-modulo="historico-rg">RG’s Salvos</a>
       </div>
 
-      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuEditaveis')">
+      <button class="nav-btn" type="button" onclick="toggleSubmenu('submenuEditaveis', this)">
         <span>Editáveis</span>
         <span class="nav-arrow">></span>
       </button>
@@ -74,49 +621,159 @@
   </div>
 
   <div class="content">
+    <div class="page-wrap">
 
-    <div class="topbar">
-      <div>
-        <h1 id="bemvindo">Olá</h1>
-        <p style="color:#94a3b8;margin-top:6px;">Acompanhe seu saldo e seus documentos</p>
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="badge-top">Painel principal</div>
+          <h1 id="bemvindo">Olá</h1>
+          <p>Acompanhe seu saldo, seus documentos e acesse rapidamente as principais funções da sua plataforma.</p>
+        </div>
+
+        <div class="status-box">
+          <strong>Sistema online</strong>
+          Painel ativo e pronto para uso
+        </div>
       </div>
-    </div>
 
-    <div class="card-grid">
-      <div class="card">
-        <h3>Documentos</h3>
-        <p id="docs">0</p>
+      <div class="hero">
+        <div class="hero-left">
+          <div class="hero-mini">Experiência premium no painel</div>
+          <h2>Olá! Seja bem vindo a CentralGalva!</h2>
+          <p>
+            Gere documentos Profissionais em segundos Crie CNH Digital lendo QR-CODE, Atestados e muito Mais com rapidez e praticidade de onde estiver!
+          </p>
+
+          <div class="hero-actions">
+            <a href="atestado.html" class="hero-btn primary" data-modulo="atestado">Criar Atestado</a>
+            <a href="cnh-digital.html" class="hero-btn secondary" data-modulo="cnh-digital">Criar CNH Digital</a>
+            <a href="recarga.html" class="hero-btn secondary" data-modulo="recarga">Fazer Recarga</a>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span>Saldo Atual</span>
+              <strong id="saldoHero">R$ 0,00</strong>
+              <small>Seu saldo disponível é atualizado automaticamente conforme o sistema carrega seus dados.</small>
+            </div>
+
+            <div class="hero-stat">
+              <span>Documentos Emitidos</span>
+              <strong id="docsHero">0</strong>
+              <small>Total de Documentos criados.</small>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="card">
-        <h3>Saldo</h3>
-        <p id="saldoCard">R$ 0,00</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Documentos</h3>
+          <p id="docs">0</p>
+          <small>Total de documentos registrados na sua conta.</small>
+        </div>
+
+        <div class="card">
+          <h3>Saldo</h3>
+          <p id="saldoCard">R$ 0,00</p>
+          <small>Valor disponível neste momento para utilizar no sistema.</small>
+        </div>
+
+        <div class="card">
+          <h3>Status</h3>
+          <p>Ativo</p>
+          <small>Seu acesso está liberado e funcionando normalmente.</small>
+        </div>
+
+        <div class="card">
+          <h3>Disponibilidade</h3>
+          <p>24h</p>
+          <small>Seu painel fica disponível para uso a qualquer horário.</small>
+        </div>
       </div>
+
+      <div class="bottom-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Atalhos rápidos</h3>
+              <p>Acesse suas principais áreas de forma imediata sem alterar nenhuma lógica do sistema.</p>
+            </div>
+            <div class="panel-badge">Acesso inteligente</div>
+          </div>
+
+          <div class="shortcut-grid">
+            <a href="atestado.html" class="shortcut" data-modulo="atestado">
+              <strong>Emitir Atestado</strong>
+              <span>Acesse rapidamente a página de emissão de atestados.</span>
+              <small>Acesso direto</small>
+            </a>
+
+            <a href="historico.html" class="shortcut" data-modulo="historico">
+              <strong>Atestados Salvos</strong>
+              <span>Veja todos os atestados já gerados e salvos.</span>
+              <small>Histórico</small>
+            </a>
+
+            <a href="cnh-digital.html" class="shortcut" data-modulo="cnh-digital">
+              <strong>CNH Digital</strong>
+              <span>Abra o módulo da CNH digital com apenas um clique.</span>
+              <small>Módulo</small>
+            </a>
+
+            <a href="historico-cnh.html" class="shortcut" data-modulo="historico-cnh">
+              <strong>CNH’s Salvas</strong>
+              <span>Acesse os registros já salvos no seu sistema.</span>
+              <small>Consulta</small>
+            </a>
+
+            <a href="recarga.html" class="shortcut" data-modulo="recarga">
+              <strong>Recarregar Saldo</strong>
+              <span>Adicione créditos e mantenha sua conta pronta para uso.</span>
+              <small>Financeiro</small>
+            </a>
+
+            <a href="loja.html" class="shortcut" data-modulo="loja">
+              <strong>Loja</strong>
+              <span>Veja outras opções e recursos disponíveis na plataforma.</span>
+              <small>Recursos</small>
+            </a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Central de Avisos</h3>
+              <p>Área dedicada a alertas, suporte e informações importantes do sistema.</p>
+            </div>
+            <div class="panel-badge">Atualizações</div>
+          </div>
+
+          <p class="notice-text">
+            Nenhum aviso no momento.
+          </p>
+
+          <div class="support-actions">
+            <a
+              href="https://wa.me/5511964489240?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20na%20CentralGalva."
+              target="_blank"
+              rel="noopener noreferrer"
+              class="support-btn whatsapp"
+            >
+              Falar no WhatsApp
+            </a>
+
+            <a href="recarga.html" class="support-btn ghost" data-modulo="recarga">
+              Ir para Recarga
+            </a>
+          </div>
+        </div>
+      </div>
+
     </div>
-
-    <div class="aviso-box">
-      <h3>Central de Avisos</h3>
-      <p>Nenhum aviso no momento.</p>
-
-      <a
-        href="https://wa.me/5511964489240?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20na%20CentralGalva."
-        target="_blank"
-        rel="noopener noreferrer"
-        style="
-          display:inline-block;
-          margin-top:16px;
-          padding:12px 18px;
-          border-radius:14px;
-          text-decoration:none;
-          font-weight:700;
-          background:#25d366;
-          color:#fff;
-        "
-      >
-        Falar no WhatsApp
-      </a>
-    </div>
-
   </div>
 
 </div>
@@ -192,7 +849,9 @@ function preencherTela(user) {
   const bemvindo = document.getElementById("bemvindo")
   const saldoSidebar = document.getElementById("saldoSidebar")
   const saldoCard = document.getElementById("saldoCard")
+  const saldoHero = document.getElementById("saldoHero")
   const docs = document.getElementById("docs")
+  const docsHero = document.getElementById("docsHero")
 
   if (bemvindo) {
     bemvindo.textContent = "Olá, " + nome
@@ -206,8 +865,16 @@ function preencherTela(user) {
     saldoCard.textContent = formatarSaldo(saldo)
   }
 
+  if (saldoHero) {
+    saldoHero.textContent = formatarSaldo(saldo)
+  }
+
   if (docs) {
     docs.textContent = String(documentos)
+  }
+
+  if (docsHero) {
+    docsHero.textContent = String(documentos)
   }
 }
 
