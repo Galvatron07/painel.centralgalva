@@ -88,7 +88,7 @@ async function login() {
 }
 
 async function cadastro() {
-  let usuario = document.getElementById("emailCadastro").value.trim().toLowerCase()
+  let usuario = document.getElementById("emailCadastro").value.trim()
   let senha = document.getElementById("senhaCadastro").value.trim()
 
   if (!usuario || !senha) {
@@ -103,7 +103,7 @@ async function cadastro() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: usuario,
+        usuario: usuario,
         senha: senha
       })
     })
