@@ -22,8 +22,8 @@ const sessoesFile = "./database/sessoes.json"
 
 const APP_BASE_URL = process.env.APP_BASE_URL || "http://localhost:3000"
 const APP_VALIDATION_BASE_URL = process.env.APP_VALIDATION_BASE_URL || APP_BASE_URL
-const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN || ""
-const PAGSEGURO_ENV = process.env.PAGSEGURO_ENV || "sandbox"
+const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN || ""
+const MERCADO_PAGO_WEBHOOK_SECRET = process.env.MERCADO_PAGO_WEBHOOK_SECRET || ""
 const CREDITS_PER_REAL = Number(process.env.CREDITS_PER_REAL || 2)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@admin.com"
 const ADMIN_SENHA = process.env.ADMIN_SENHA || "1234"
@@ -39,10 +39,7 @@ if (TRUST_PROXY) {
   app.set("trust proxy", 1)
 }
 
-const PAGSEGURO_API_BASE =
-  PAGSEGURO_ENV === "production"
-    ? "https://api.pagseguro.com"
-    : "https://sandbox.api.pagseguro.com"
+const MERCADO_PAGO_API_BASE = "https://api.mercadopago.com"
 
 const GRUPOS_MODELO = ["UPA", "SUS", "HAPVIDA", "UNIMED", "ESPECIFICO"]
 const TIPOS_CAMPO_SUPORTADOS = [
@@ -177,16 +174,22 @@ function normalizarCategoriasAdicionais(lista = []) {
     .filter(item => item.categoria || item.validade)
 }
 
-function getPagSeguroHeaders() {
-  if (!PAGSEGURO_TOKEN) {
-    throw new Error("Token do PagSeguro não configurado")
+function getMercadoPagoHeaders(idempotencyKey = "") {
+  if (!MERCADO_PAGO_ACCESS_TOKEN) {
+    throw new Error("Access Token do Mercado Pago não configurado")
   }
 
-  return {
-    Authorization: `Bearer ${PAGSEGURO_TOKEN}`,
+  const headers = {
+    Authorization: `Bearer ${MERCADO_PAGO_ACCESS_TOKEN}`,
     "Content-Type": "application/json",
     Accept: "application/json"
   }
+
+  if (idempotencyKey) {
+    headers["X-Idempotency-Key"] = idempotencyKey
+  }
+
+  return headers
 }
 
 function obterIp(req) {
@@ -444,49 +447,42 @@ app.use("/docs", express.static("docs", { etag: true, maxAge: "1h" }))
 app.use("/generated", express.static("generated", { etag: true, maxAge: "1h" }))
 app.use("/uploads", express.static("uploads", { etag: true, maxAge: "1h" }))
 
-async function criarCheckoutPagSeguro({ usuario, valor, creditos }) {
-  const referenceId = `recarga_${usuario}_${Date.now()}`
+async function criarPixMercadoPago({ usuario, valor, creditos }) {
+  const referenceId = `recarga_${slug(usuario)}_${Date.now()}`
+  const idempotencyKey = crypto.randomUUID()
+
+  const emailCliente = emailValido(usuario) ? usuario : `${slug(usuario || "usuario")}@example.com`
 
   const body = {
-    reference_id: referenceId,
-    redirect_url: `${APP_BASE_URL}/recarga.html`,
-    payment_methods: [
-      { type: "PIX" },
-      { type: "BOLETO" },
-      { type: "CREDIT_CARD" },
-      { type: "DEBIT_CARD" }
-    ],
-    items: [
-      {
-        name: `Recarga de créditos - ${usuario}`,
-        quantity: 1,
-        unit_amount: Math.round(valor * 100)
-      }
-    ],
-    customer_modifiable: true,
-    additional_amount: 0,
-    discount_amount: 0,
-    expiration_date: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-    notification_urls: [`${APP_BASE_URL}/api/pagseguro/webhook`],
-    payment_notification_urls: [`${APP_BASE_URL}/api/pagseguro/webhook`]
+    transaction_amount: Number(valor),
+    description: `Recarga de créditos - ${usuario}`,
+    payment_method_id: "pix",
+    notification_url: `${APP_BASE_URL}/api/mercadopago/webhook`,
+    external_reference: referenceId,
+    payer: {
+      email: emailCliente
+    }
   }
 
-  const response = await fetch(`${PAGSEGURO_API_BASE}/checkouts`, {
+  const response = await fetch(`${MERCADO_PAGO_API_BASE}/v1/payments`, {
     method: "POST",
-    headers: getPagSeguroHeaders(),
+    headers: getMercadoPagoHeaders(idempotencyKey),
     body: JSON.stringify(body)
   })
 
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data?.message || "Erro ao criar checkout no PagSeguro")
+    console.error("Erro Mercado Pago criar PIX:", data)
+    throw new Error(data?.message || data?.error_description || "Erro ao criar PIX no Mercado Pago")
   }
 
-  const payLink = (data.links || []).find(link => link.rel === "PAY")?.href
+  const qrCode = data?.point_of_interaction?.transaction_data?.qr_code || ""
+  const qrCodeBase64 = data?.point_of_interaction?.transaction_data?.qr_code_base64 || ""
+  const ticketUrl = data?.point_of_interaction?.transaction_data?.ticket_url || ""
 
-  if (!payLink) {
-    throw new Error("PagSeguro não retornou link de pagamento")
+  if (!qrCode && !qrCodeBase64) {
+    throw new Error("Mercado Pago não retornou os dados do PIX")
   }
 
   let recargas = ler(recargasFile)
@@ -496,35 +492,49 @@ async function criarCheckoutPagSeguro({ usuario, valor, creditos }) {
     usuario,
     valor: Number(valor),
     creditos: Number(creditos),
-    status: data.status || "CREATED",
+    status: data.status || "pending",
     referencia: referenceId,
-    checkout_id: data.id,
+    payment_id: data.id,
     processada: false,
+    gateway: "mercado_pago",
+    tipo: "pix",
+    qr_code: qrCode,
+    qr_code_base64: qrCodeBase64,
+    ticket_url: ticketUrl,
     criada_em: agoraIso()
   })
 
   salvar(recargasFile, recargas)
 
   return {
-    checkoutId: data.id,
+    paymentId: data.id,
     referenceId,
-    initPoint: payLink
+    qrCode,
+    qrCodeBase64,
+    ticketUrl,
+    status: data.status || "pending"
   }
 }
 
-async function consultarCheckoutPagSeguro(checkoutId) {
-  const response = await fetch(`${PAGSEGURO_API_BASE}/checkouts/${checkoutId}`, {
+async function consultarPagamentoMercadoPago(paymentId) {
+  const response = await fetch(`${MERCADO_PAGO_API_BASE}/v1/payments/${paymentId}`, {
     method: "GET",
-    headers: getPagSeguroHeaders()
+    headers: getMercadoPagoHeaders()
   })
 
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data?.message || "Erro ao consultar checkout no PagSeguro")
+    console.error("Erro Mercado Pago consultar pagamento:", data)
+    throw new Error(data?.message || data?.error_description || "Erro ao consultar pagamento no Mercado Pago")
   }
 
   return data
+}
+
+function statusMercadoPagoEhAprovado(status) {
+  const valor = String(status || "").toLowerCase()
+  return valor === "approved"
 }
 
 function processarRecargaAprovada(referenceId, pagamento = {}) {
@@ -561,9 +571,9 @@ function processarRecargaAprovada(referenceId, pagamento = {}) {
   usuario.saldo = Number(usuario.saldo || 0) + Number(recarga.creditos || 0)
   usuario.recargaTotal = Number(usuario.recargaTotal || 0) + Number(recarga.valor || 0)
 
-  recarga.status = pagamento.status || "PAID"
+  recarga.status = pagamento.status || "approved"
   recarga.processada = true
-  recarga.pagamento_id = pagamento.id || null
+  recarga.pagamento_id = pagamento.id || recarga.payment_id || null
   recarga.aprovada_em = agoraIso()
 
   salvar(usuariosFile, usuarios)
@@ -1735,7 +1745,7 @@ app.post("/api/recarga/criar", authUsuarioOuAdmin, rateLimit({ janelaMs: 60000, 
 
     let creditos = Math.round(valorNumerico * CREDITS_PER_REAL)
 
-    let resultado = await criarCheckoutPagSeguro({
+    let resultado = await criarPixMercadoPago({
       usuario: normalizarUsuario(usuario),
       valor: valorNumerico,
       creditos
@@ -1743,9 +1753,12 @@ app.post("/api/recarga/criar", authUsuarioOuAdmin, rateLimit({ janelaMs: 60000, 
 
     res.json({
       ok: true,
-      init_point: resultado.initPoint,
-      checkout_id: resultado.checkoutId,
+      payment_id: resultado.paymentId,
       reference_id: resultado.referenceId,
+      qr_code: resultado.qrCode,
+      qr_code_base64: resultado.qrCodeBase64,
+      ticket_url: resultado.ticketUrl,
+      status: resultado.status,
       creditos
     })
   } catch (error) {
@@ -1755,7 +1768,7 @@ app.post("/api/recarga/criar", authUsuarioOuAdmin, rateLimit({ janelaMs: 60000, 
 
 app.post("/api/recarga/sincronizar", authUsuarioOuAdmin, rateLimit({ janelaMs: 60000, limite: 20 }), async (req, res) => {
   try {
-    let { checkout_id, reference_id } = req.body
+    let { payment_id, reference_id } = req.body
 
     if (reference_id) {
       let recargas = ler(recargasFile)
@@ -1783,38 +1796,83 @@ app.post("/api/recarga/sincronizar", authUsuarioOuAdmin, rateLimit({ janelaMs: 6
         })
       }
 
-      return res.json({
-        ok: true,
-        status: recarga.status || "WAITING"
-      })
-    }
-
-    if (checkout_id) {
-      let checkout = await consultarCheckoutPagSeguro(checkout_id)
-      let pagamentos = checkout.payments || []
-      let pago = pagamentos.find(p => p.status === "PAID" || p.status === "AUTHORIZED")
-
-      if (!pago) {
+      if (!recarga.payment_id) {
         return res.json({
           ok: true,
-          status: checkout.status || "WAITING"
+          status: recarga.status || "pending",
+          recarga
         })
       }
 
-      let resultado = processarRecargaAprovada(checkout.reference_id, {
-        id: pago.id,
-        status: pago.status
+      const pagamento = await consultarPagamentoMercadoPago(recarga.payment_id)
+
+      if (!statusMercadoPagoEhAprovado(pagamento.status)) {
+        recarga.status = pagamento.status || recarga.status || "pending"
+        salvar(recargasFile, recargas)
+
+        return res.json({
+          ok: true,
+          status: pagamento.status || "pending",
+          recarga
+        })
+      }
+
+      const resultado = processarRecargaAprovada(recarga.referencia, {
+        id: pagamento.id,
+        status: pagamento.status
       })
 
       return res.json({
         ok: true,
-        status: pago.status,
+        status: pagamento.status,
         saldo: resultado.saldo,
         recarga: resultado.recarga
       })
     }
 
-    return res.status(400).json({ erro: "checkout_id ou reference_id não informado" })
+    if (payment_id) {
+      const pagamento = await consultarPagamentoMercadoPago(payment_id)
+
+      if (!pagamento.external_reference) {
+        return res.status(400).json({ erro: "Pagamento sem referência externa" })
+      }
+
+      let recargas = ler(recargasFile)
+      let recarga = recargas.find(r => r.referencia === pagamento.external_reference)
+
+      if (!recarga) {
+        return res.status(404).json({ erro: "Recarga não encontrada" })
+      }
+
+      if (req.auth.tipo !== "admin" && normalizarUsuario(recarga.usuario) !== normalizarUsuario(req.auth.usuario)) {
+        return res.status(403).json({ erro: "Acesso não autorizado" })
+      }
+
+      if (!statusMercadoPagoEhAprovado(pagamento.status)) {
+        recarga.status = pagamento.status || recarga.status || "pending"
+        salvar(recargasFile, recargas)
+
+        return res.json({
+          ok: true,
+          status: pagamento.status || "pending",
+          recarga
+        })
+      }
+
+      let resultado = processarRecargaAprovada(pagamento.external_reference, {
+        id: pagamento.id,
+        status: pagamento.status
+      })
+
+      return res.json({
+        ok: true,
+        status: pagamento.status,
+        saldo: resultado.saldo,
+        recarga: resultado.recarga
+      })
+    }
+
+    return res.status(400).json({ erro: "payment_id ou reference_id não informado" })
   } catch (error) {
     res.status(500).json({ erro: error.message })
   }
@@ -1834,39 +1892,61 @@ app.get("/api/recarga/historico/:usuario", authUsuarioOuAdmin, rateLimit(), (req
   res.json(historico)
 })
 
-app.post("/api/pagseguro/webhook", rateLimit({ janelaMs: 60000, limite: 60 }), async (req, res) => {
+app.post("/api/mercadopago/webhook", rateLimit({ janelaMs: 60000, limite: 60 }), async (req, res) => {
   try {
-    let payload = req.body || {}
-
-    let referenceId =
-      payload.reference_id ||
-      payload.referenceId ||
-      payload?.charges?.[0]?.reference_id ||
-      payload?.payments?.[0]?.reference_id
-
-    let paymentId =
-      payload?.charges?.[0]?.id ||
-      payload?.payments?.[0]?.id ||
-      payload?.id
-
-    let paymentStatus =
-      payload?.charges?.[0]?.status ||
-      payload?.payments?.[0]?.status ||
-      payload?.status
-
-    if (!referenceId) {
-      return res.json({ ok: true, ignorado: true })
+    if (MERCADO_PAGO_WEBHOOK_SECRET) {
+      const recebido = String(req.headers["x-signature"] || "").trim()
+      if (!recebido) {
+        return res.status(401).json({ erro: "Assinatura ausente" })
+      }
     }
 
-    if (paymentStatus === "PAID" || paymentStatus === "AUTHORIZED") {
-      processarRecargaAprovada(referenceId, {
-        id: paymentId,
-        status: paymentStatus
+    const body = req.body || {}
+
+    let paymentId =
+      body?.data?.id ||
+      body?.id ||
+      body?.resource?.split("/")?.pop() ||
+      req.query?.["data.id"] ||
+      req.query?.id
+
+    const topic = String(body?.type || body?.topic || req.query?.type || req.query?.topic || "").toLowerCase()
+
+    if (topic && topic !== "payment") {
+      return res.json({ ok: true, ignorado: true, motivo: "topic diferente de payment" })
+    }
+
+    if (!paymentId) {
+      return res.json({ ok: true, ignorado: true, motivo: "payment_id ausente" })
+    }
+
+    const pagamento = await consultarPagamentoMercadoPago(paymentId)
+
+    if (!pagamento.external_reference) {
+      return res.json({ ok: true, ignorado: true, motivo: "sem external_reference" })
+    }
+
+    let recargas = ler(recargasFile)
+    let recarga = recargas.find(r => r.referencia === pagamento.external_reference)
+
+    if (!recarga) {
+      return res.json({ ok: true, ignorado: true, motivo: "recarga não encontrada" })
+    }
+
+    recarga.status = pagamento.status || recarga.status || "pending"
+    recarga.payment_id = pagamento.id || recarga.payment_id || null
+    salvar(recargasFile, recargas)
+
+    if (statusMercadoPagoEhAprovado(pagamento.status)) {
+      processarRecargaAprovada(pagamento.external_reference, {
+        id: pagamento.id,
+        status: pagamento.status
       })
     }
 
     res.json({ ok: true })
   } catch (error) {
+    console.error("Erro webhook Mercado Pago:", error)
     res.status(500).json({ erro: error.message })
   }
 })

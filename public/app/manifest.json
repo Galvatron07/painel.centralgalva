@@ -1,8 +1,10 @@
 {
-  "name": "Meu App",
-  "short_name": "Meu App",
+  "name": "Carteira Digital de trânsito",
+  "short_name": "Carteira Digital",
   "start_url": "/app/splash.html",
-  "display": "standalone",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "icons": [

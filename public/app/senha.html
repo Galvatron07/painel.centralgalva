@@ -2,9 +2,20 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Digite sua senha</title>
+
   <link rel="stylesheet" href="css/app.css">
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="apple-mobile-web-app-title" content="Carteira Digital">
+
+  <link rel="icon" type="image/png" href="img/icone-192.png">
+  <link rel="apple-touch-icon" href="img/icone-192.png">
 </head>
 <body>
 
@@ -162,7 +173,7 @@
           primeiraHabilitacao: data.primeiraHabilitacao || "",
           observacoes: data.observacoes || "",
           cidadeEmissao: data.cidadeEmissao || "",
-          uf: data.ufCnh || data.ufEmissao || "",
+          uf: data.ufEmissao || data.ufCnh || "",
           dataEmissao: data.dataEmissao || "",
           numeroValidacao: data.codigoSeguranca || "",
           renach: data.renach || "",

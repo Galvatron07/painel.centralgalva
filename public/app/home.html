@@ -2,9 +2,26 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>App - Início</title>
+
   <link rel="stylesheet" href="css/app.css">
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="apple-mobile-web-app-title" content="Carteira Digital">
+
+  <link rel="icon" type="image/png" href="img/icone-192.png">
+  <link rel="apple-touch-icon" href="img/icone-192.png">
+
+  <style>
+    .sino-home{
+      color:#ffffff !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -118,7 +135,7 @@
         primeiraHabilitacao: cadastroServidor.primeiraHabilitacao || dadosUsuarioApp.primeiraHabilitacao || "",
         observacoes: cadastroServidor.observacoes || dadosUsuarioApp.observacoes || "",
         cidadeEmissao: cadastroServidor.cidadeEmissao || dadosUsuarioApp.cidadeEmissao || "",
-        uf: cadastroServidor.ufCnh || dadosUsuarioApp.uf || "",
+        uf: cadastroServidor.ufEmissao || cadastroServidor.ufCnh || dadosUsuarioApp.uf || "",
         dataEmissao: cadastroServidor.dataEmissao || dadosUsuarioApp.dataEmissao || "",
         numeroValidacao: cadastroServidor.codigoSeguranca || dadosUsuarioApp.numeroValidacao || "",
         renach: cadastroServidor.renach || dadosUsuarioApp.renach || "",

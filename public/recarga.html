@@ -12,103 +12,570 @@
   <link rel="stylesheet" href="css/sidebar.css">
 
   <style>
-    .page-title{
-      margin:0 0 20px 0;
-      font-size:32px;
+    :root{
+      --bg-main:#06111f;
+      --bg-panel:#0b1a2d;
+      --bg-panel-2:#10243c;
+      --bg-card:#0d2138;
+      --line:rgba(255,255,255,0.07);
+      --line-strong:rgba(91,180,255,0.22);
+      --text:#ffffff;
+      --muted:#9ab0ca;
+      --muted-2:#c7d8ef;
+      --blue-1:#1ecbff;
+      --blue-2:#1677ff;
+      --blue-3:#0a58ca;
+      --success:#34d399;
+      --shadow:0 18px 45px rgba(0,0,0,0.32);
+      --shadow-soft:0 10px 26px rgba(0,0,0,0.22);
+      --radius-xl:24px;
+      --radius-lg:20px;
+      --radius-md:16px;
+      --radius-sm:12px;
+    }
+
+    .content{
+      background:
+        radial-gradient(circle at top right, rgba(36,130,255,0.12), transparent 28%),
+        radial-gradient(circle at top left, rgba(30,203,255,0.10), transparent 25%),
+        linear-gradient(180deg, #040b16 0%, #06111f 100%);
+      min-height:100vh;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .content::before{
+      content:"";
+      position:absolute;
+      top:-120px;
+      right:-120px;
+      width:320px;
+      height:320px;
+      background:radial-gradient(circle, rgba(30,203,255,0.10), transparent 70%);
+      pointer-events:none;
+    }
+
+    .content::after{
+      content:"";
+      position:absolute;
+      left:-100px;
+      bottom:-120px;
+      width:300px;
+      height:300px;
+      background:radial-gradient(circle, rgba(22,119,255,0.10), transparent 70%);
+      pointer-events:none;
+    }
+
+    .recarga-wrap{
+      position:relative;
+      z-index:1;
+    }
+
+    .pageHero{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+
+    .pageHeroLeft h1{
+      margin:0;
+      font-size:38px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-1.2px;
+      color:var(--text);
+    }
+
+    .pageHeroLeft p{
+      margin:10px 0 0 0;
+      color:var(--muted);
+      font-size:15px;
+      max-width:640px;
+      line-height:1.6;
+    }
+
+    .statusBadge{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:14px 18px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(16,36,60,0.95), rgba(10,22,40,0.95));
+      border:1px solid var(--line-strong);
+      box-shadow:var(--shadow-soft);
+      color:#dff3ff;
+      min-height:52px;
+    }
+
+    .statusDot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--success);
+      box-shadow:0 0 0 6px rgba(52,211,153,0.14);
+      flex-shrink:0;
+    }
+
+    .painelResumo{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:18px;
+      margin-bottom:24px;
+    }
+
+    .resumoCard{
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(14,32,53,0.98), rgba(9,20,36,0.98));
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .resumoCard::before{
+      content:"";
+      position:absolute;
+      top:-40px;
+      right:-40px;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(30,203,255,0.18), transparent 70%);
+      pointer-events:none;
+    }
+
+    .resumoLabel{
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.9px;
+      margin-bottom:10px;
       font-weight:700;
+    }
+
+    .resumoValue{
+      color:var(--text);
+      font-size:28px;
+      font-weight:800;
       letter-spacing:-0.8px;
+      line-height:1.1;
+    }
+
+    .resumoSub{
+      margin-top:8px;
+      color:#b9cae4;
+      font-size:13px;
     }
 
     .cardsRecarga{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
       gap:18px;
       margin-bottom:24px;
     }
 
     .cardValor{
-      background:linear-gradient(180deg, rgba(20,40,66,0.98), rgba(14,25,45,0.98));
-      border-radius:20px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(180deg, rgba(14,31,51,0.98), rgba(9,20,36,0.98));
+      border-radius:22px;
       padding:24px 20px;
-      text-align:center;
+      text-align:left;
       cursor:pointer;
-      box-shadow:0 16px 34px rgba(0,0,0,0.22);
-      transition:.18s ease;
+      box-shadow:var(--shadow);
+      transition:.2s ease;
       border:1px solid rgba(255,255,255,0.06);
+    }
+
+    .cardValor::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg, rgba(30,203,255,0.08), rgba(22,119,255,0.06), transparent 60%);
+      pointer-events:none;
+    }
+
+    .cardValor::after{
+      content:"";
+      position:absolute;
+      top:-50px;
+      right:-50px;
+      width:140px;
+      height:140px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(30,203,255,0.16), transparent 70%);
+      pointer-events:none;
     }
 
     .cardValor:hover{
-      background:#1d385d;
-      transform:translateY(-2px);
+      transform:translateY(-4px);
+      border-color:rgba(30,203,255,0.26);
+      box-shadow:0 22px 52px rgba(0,0,0,0.38);
+    }
+
+    .cardTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+
+    .seloRecarga{
+      min-width:42px;
+      height:42px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      background:linear-gradient(135deg, rgba(30,203,255,0.16), rgba(22,119,255,0.20));
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     .valor{
-      font-size:30px;
+      font-size:34px;
       font-weight:800;
-      letter-spacing:-0.7px;
+      letter-spacing:-1px;
+      color:var(--text);
+      line-height:1;
+      position:relative;
+      z-index:1;
     }
 
     .credito{
-      margin-top:8px;
-      font-size:14px;
-      opacity:.88;
-      color:#c9ddf7;
+      margin-top:10px;
+      font-size:15px;
+      color:#d5e5fb;
+      position:relative;
+      z-index:1;
     }
 
-    .customRecarga{
-      background:linear-gradient(180deg, rgba(20,40,66,0.98), rgba(14,25,45,0.98));
-      padding:24px;
-      border-radius:20px;
-      box-shadow:0 16px 34px rgba(0,0,0,0.22);
-      margin-bottom:24px;
-      max-width:600px;
+    .bonusInfo{
+      margin-top:18px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.04);
       border:1px solid rgba(255,255,255,0.06);
+      color:#9fd8ff;
+      font-size:12px;
+      font-weight:700;
+      position:relative;
+      z-index:1;
+    }
+
+    .recargaGrid{
+      display:grid;
+      grid-template-columns:minmax(0, 1.1fr) minmax(280px, 0.75fr);
+      gap:20px;
+      margin-bottom:24px;
+    }
+
+    .customRecarga,
+    .painelInfo{
+      background:linear-gradient(180deg, rgba(14,32,53,0.98), rgba(9,20,36,0.98));
+      padding:24px;
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,0.06);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .customRecarga::before,
+    .painelInfo::before{
+      content:"";
+      position:absolute;
+      top:-50px;
+      right:-50px;
+      width:160px;
+      height:160px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(30,203,255,0.12), transparent 70%);
+      pointer-events:none;
+    }
+
+    .blocoTitulo{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+      position:relative;
+      z-index:1;
+    }
+
+    .blocoTitulo h3{
+      margin:0;
+      font-size:26px;
+      letter-spacing:-0.7px;
+      color:var(--text);
+    }
+
+    .blocoTitulo p{
+      margin:8px 0 0 0;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .creditoPreview{
+      min-width:130px;
+      text-align:center;
+      padding:14px 16px;
+      border-radius:18px;
+      background:linear-gradient(135deg, rgba(30,203,255,0.12), rgba(22,119,255,0.18));
+      border:1px solid rgba(80,180,255,0.20);
+      color:#e9f7ff;
+    }
+
+    .creditoPreview .miniLabel{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:0.8px;
+      color:#b5d6ef;
+      margin-bottom:6px;
+      font-weight:700;
+    }
+
+    .creditoPreview .miniValue{
+      font-size:24px;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .formRecarga{
+      position:relative;
+      z-index:1;
+    }
+
+    .inputWrap{
+      margin-bottom:14px;
+    }
+
+    .inputWrap label{
+      display:block;
+      margin-bottom:8px;
+      color:#dbe9fb;
+      font-size:14px;
+      font-weight:700;
     }
 
     .customRecarga input{
       width:100%;
-      padding:14px 15px;
-      margin-bottom:12px;
-      border-radius:14px;
+      padding:16px 16px;
+      border-radius:16px;
       box-sizing:border-box;
-      font-size:14px;
+      font-size:15px;
+      color:#fff;
+      background:#071426;
+      border:1px solid rgba(255,255,255,0.08);
+      outline:none;
+      transition:.18s ease;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .customRecarga input:focus{
+      border-color:rgba(30,203,255,0.35);
+      box-shadow:0 0 0 4px rgba(30,203,255,0.08);
+    }
+
+    .inputHint{
+      margin:10px 0 0 0;
+      color:#92aac6;
+      font-size:12px;
+      line-height:1.5;
     }
 
     .customRecarga button{
       width:100%;
-      padding:14px;
+      padding:16px;
       border:none;
-      border-radius:14px;
-      background:linear-gradient(135deg, #38bdf8, #2563eb);
+      border-radius:16px;
+      background:linear-gradient(135deg, #1ecbff, #1677ff);
       color:white;
-      font-weight:700;
+      font-weight:800;
+      font-size:15px;
       cursor:pointer;
-      box-shadow:0 12px 25px rgba(37,99,235,0.22);
+      box-shadow:0 16px 30px rgba(22,119,255,0.26);
+      transition:.18s ease;
+    }
+
+    .customRecarga button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 20px 34px rgba(22,119,255,0.34);
+    }
+
+    .infoList{
+      position:relative;
+      z-index:1;
+      display:grid;
+      gap:14px;
+    }
+
+    .infoItem{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.05);
+    }
+
+    .infoIcon{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      background:linear-gradient(135deg, rgba(30,203,255,0.14), rgba(22,119,255,0.20));
+      color:#dff6ff;
+      font-size:18px;
+    }
+
+    .infoText strong{
+      display:block;
+      color:#eef7ff;
+      font-size:14px;
+      margin-bottom:4px;
+    }
+
+    .infoText span{
+      color:#9ab0ca;
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .historicoBox{
+      background:linear-gradient(180deg, rgba(14,32,53,0.98), rgba(9,20,36,0.98));
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,0.06);
+      overflow:hidden;
+    }
+
+    .historicoHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:22px 22px 16px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      flex-wrap:wrap;
+    }
+
+    .historicoHead h3{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-0.8px;
+      color:var(--text);
+    }
+
+    .historicoHead p{
+      margin:8px 0 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .historicoTag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.06);
+      color:#cfe9ff;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .tableWrap{
+      width:100%;
+      overflow-x:auto;
     }
 
     table{
       width:100%;
-      background:#0f1a2e;
+      background:transparent;
       border-collapse:collapse;
       color:white;
-      border-radius:20px;
-      overflow:hidden;
-      box-shadow:0 16px 34px rgba(0,0,0,0.22);
-      border:1px solid rgba(255,255,255,0.06);
+      min-width:620px;
     }
 
     th,td{
-      padding:14px 12px;
+      padding:18px 18px;
       border-bottom:1px solid rgba(255,255,255,0.06);
       color:#e5eefc;
+      text-align:left;
     }
 
     th{
-      background:#14233d;
+      background:rgba(20,35,61,0.72);
       color:#b9cae4;
       text-transform:uppercase;
       font-size:12px;
-      letter-spacing:.5px;
+      letter-spacing:.7px;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    tbody tr{
+      transition:.18s ease;
+    }
+
+    tbody tr:hover{
+      background:rgba(255,255,255,0.03);
+    }
+
+    tbody tr:last-child td{
+      border-bottom:none;
+    }
+
+    @media (max-width: 1100px){
+      .painelResumo{
+        grid-template-columns:1fr;
+      }
+
+      .recargaGrid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 768px){
+      .pageHeroLeft h1{
+        font-size:32px;
+      }
+
+      .cardsRecarga{
+        grid-template-columns:1fr;
+      }
+
+      .blocoTitulo{
+        flex-direction:column;
+      }
+
+      .creditoPreview{
+        width:100%;
+      }
+
+      .historicoHead h3{
+        font-size:24px;
+      }
     }
   </style>
 
@@ -178,59 +645,169 @@
   </div>
 
   <div class="content">
+    <div class="recarga-wrap">
 
-    <h1 class="page-title">Recarga</h1>
+      <div class="pageHero">
+        <div class="pageHeroLeft">
+          <h1>Recarga de Créditos</h1>
+          <p>Escolha um valor rápido ou personalize sua recarga para continuar emitindo documentos com mais agilidade, segurança e praticidade.</p>
+        </div>
 
-    <div class="cardsRecarga">
-
-      <div class="cardValor" onclick="recargaRapida(20)">
-        <div class="valor">R$20</div>
-        <div class="credito">Recebe 40 créditos</div>
+        <div class="statusBadge">
+          <span class="statusDot"></span>
+          <span>Pagamento online disponível</span>
+        </div>
       </div>
 
-      <div class="cardValor" onclick="recargaRapida(50)">
-        <div class="valor">R$50</div>
-        <div class="credito">Recebe 100 créditos</div>
+      <div class="painelResumo">
+        <div class="resumoCard">
+          <div class="resumoLabel">Saldo atual</div>
+          <div class="resumoValue" id="saldoPainelResumo">R$ 0,00</div>
+          <div class="resumoSub">Seu saldo disponível para novas emissões.</div>
+        </div>
+
+        <div class="resumoCard">
+          <div class="resumoLabel">Conversão padrão</div>
+          <div class="resumoValue">R$ 1 = 2 créditos</div>
+          <div class="resumoSub">Cada recarga gera créditos automaticamente no sistema.</div>
+        </div>
+
+        <div class="resumoCard">
+          <div class="resumoLabel">Recarga mínima</div>
+          <div class="resumoValue">R$ 20,00</div>
+          <div class="resumoSub">Valor mínimo aceito para gerar um novo pagamento.</div>
+        </div>
       </div>
 
-      <div class="cardValor" onclick="recargaRapida(100)">
-        <div class="valor">R$100</div>
-        <div class="credito">Recebe 200 créditos</div>
+      <div class="cardsRecarga">
+
+        <div class="cardValor" onclick="recargaRapida(20)">
+          <div class="cardTop">
+            <div class="valor">R$20</div>
+            <div class="seloRecarga">⚡</div>
+          </div>
+          <div class="credito">Receba 40 créditos no sistema</div>
+          <div class="bonusInfo">Recarga rápida</div>
+        </div>
+
+        <div class="cardValor" onclick="recargaRapida(50)">
+          <div class="cardTop">
+            <div class="valor">R$50</div>
+            <div class="seloRecarga">💎</div>
+          </div>
+          <div class="credito">Receba 100 créditos no sistema</div>
+          <div class="bonusInfo">Mais usado</div>
+        </div>
+
+        <div class="cardValor" onclick="recargaRapida(100)">
+          <div class="cardTop">
+            <div class="valor">R$100</div>
+            <div class="seloRecarga">🚀</div>
+          </div>
+          <div class="credito">Receba 200 créditos no sistema</div>
+          <div class="bonusInfo">Melhor ritmo</div>
+        </div>
+
+        <div class="cardValor" onclick="recargaRapida(500)">
+          <div class="cardTop">
+            <div class="valor">R$500</div>
+            <div class="seloRecarga">👑</div>
+          </div>
+          <div class="credito">Receba 1000 créditos no sistema</div>
+          <div class="bonusInfo">Alta capacidade</div>
+        </div>
+
       </div>
 
-      <div class="cardValor" onclick="recargaRapida(500)">
-        <div class="valor">R$500</div>
-        <div class="credito">Recebe 1000 créditos</div>
+      <div class="recargaGrid">
+        <div class="customRecarga">
+
+          <div class="blocoTitulo">
+            <div>
+              <h3>Outro valor</h3>
+              <p>Digite um valor personalizado para gerar uma nova recarga e receber seus créditos automaticamente.</p>
+            </div>
+
+            <div class="creditoPreview">
+              <div class="miniLabel">Prévia estimada</div>
+              <div class="miniValue" id="previewCreditos">0 créditos</div>
+            </div>
+          </div>
+
+          <div class="formRecarga">
+            <div class="inputWrap">
+              <label for="valorCustom">Valor da recarga</label>
+              <input id="valorCustom" type="number" min="20" step="1" inputmode="numeric" placeholder="Digite o valor (mínimo 20)">
+            </div>
+
+            <button type="button" onclick="recargaCustom()">Adicionar créditos</button>
+            <p class="inputHint">O sistema aceita valores a partir de R$ 20,00. Assim que o pagamento for confirmado, os créditos serão liberados no seu saldo.</p>
+          </div>
+
+        </div>
+
+        <div class="painelInfo">
+          <div class="blocoTitulo">
+            <div>
+              <h3>Como funciona</h3>
+              <p>Seu processo de recarga continua exatamente igual, apenas com uma interface melhor.</p>
+            </div>
+          </div>
+
+          <div class="infoList">
+            <div class="infoItem">
+              <div class="infoIcon">1</div>
+              <div class="infoText">
+                <strong>Escolha o valor</strong>
+                <span>Selecione um dos valores rápidos ou informe um valor personalizado.</span>
+              </div>
+            </div>
+
+            <div class="infoItem">
+              <div class="infoIcon">2</div>
+              <div class="infoText">
+                <strong>Gere o pagamento</strong>
+                <span>Ao clicar em adicionar créditos, você será enviado para concluir a cobrança.</span>
+              </div>
+            </div>
+
+            <div class="infoItem">
+              <div class="infoIcon">3</div>
+              <div class="infoText">
+                <strong>Créditos liberados</strong>
+                <span>Após a confirmação do pagamento, o saldo é atualizado no sistema automaticamente.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="historicoBox">
+        <div class="historicoHead">
+          <div>
+            <h3>Histórico de Recargas</h3>
+            <p>Confira abaixo suas recargas realizadas e os créditos recebidos.</p>
+          </div>
+
+          <div class="historicoTag">Atualizado em tempo real</div>
+        </div>
+
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Valor Pago</th>
+                <th>Créditos Recebidos</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+
+            <tbody id="historicoRecarga"></tbody>
+          </table>
+        </div>
       </div>
 
     </div>
-
-    <div class="customRecarga">
-
-      <h3>Outro valor</h3>
-
-      <input id="valorCustom" type="number" min="20" step="1" inputmode="numeric" placeholder="Digite o valor (mínimo 20)">
-
-      <button type="button" onclick="recargaCustom()">Adicionar créditos</button>
-
-    </div>
-
-    <h3>Histórico de Recargas</h3>
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Valor Pago</th>
-          <th>Créditos Recebidos</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-
-      <tbody id="historicoRecarga"></tbody>
-
-    </table>
-
   </div>
 
 </div>
@@ -374,13 +951,34 @@ function formatarValor(valor){
   })
 }
 
+function atualizarResumoSaldo(valor){
+  const texto = "R$ " + formatarValor(valor)
+  const elSidebar = document.getElementById("saldoSidebar")
+  const elResumo = document.getElementById("saldoPainelResumo")
+
+  if(elSidebar){
+    elSidebar.textContent = texto
+  }
+
+  if(elResumo){
+    elResumo.textContent = texto
+  }
+}
+
+function atualizarPreviewCreditos(){
+  const campo = document.getElementById("valorCustom")
+  const preview = document.getElementById("previewCreditos")
+  if(!campo || !preview) return
+
+  const valor = Number(campo.value || 0)
+  const creditos = valor > 0 ? Math.floor(valor * 2) : 0
+  preview.textContent = creditos + " créditos"
+}
+
 function carregarSaldoSidebarLocal(){
   const usuario = getUsuario()
   const saldo = Number(usuario?.saldo || 0)
-  const el = document.getElementById("saldoSidebar")
-  if(el){
-    el.textContent = "R$ " + formatarValor(saldo)
-  }
+  atualizarResumoSaldo(saldo)
 }
 
 async function atualizarUsuarioLocal(){
@@ -557,6 +1155,7 @@ function recargaCustom(){
 
   iniciarRecarga(valor)
   campo.value = ""
+  atualizarPreviewCreditos()
 }
 
 async function sincronizarRetornoPagamento(){
@@ -621,9 +1220,18 @@ async function iniciarPaginaRecarga(){
   }
 
   carregarSaldoSidebarLocal()
+
+  const campoValor = document.getElementById("valorCustom")
+  if(campoValor){
+    campoValor.addEventListener("input", atualizarPreviewCreditos)
+    campoValor.addEventListener("keyup", atualizarPreviewCreditos)
+    campoValor.addEventListener("change", atualizarPreviewCreditos)
+  }
+
   await atualizarUsuarioLocal()
   await sincronizarRetornoPagamento()
   await carregarHistoricoRecarga()
+  atualizarPreviewCreditos()
 }
 
 configurarLinksIndisponiveis()
