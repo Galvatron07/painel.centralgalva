@@ -8,13 +8,16 @@ html, body {
   width: 100%;
   min-height: 100%;
   font-family: Arial, Helvetica, sans-serif;
-  background: #ffffff;
+  background: #e5e5e5;
 }
 
 body {
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* ÁREA PRINCIPAL */
@@ -22,8 +25,11 @@ body {
   position: relative;
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background: #e5e5e5;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 /* FUNDOS */
@@ -142,6 +148,7 @@ body {
   padding: 0 18px;
   position: relative;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  margin-top: 0 !important;
 }
 
 .btn-voltar {
@@ -291,6 +298,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 22px;
+  margin-top: 0 !important;
 }
 
 .menu-home {
@@ -434,6 +442,7 @@ body {
   z-index: 2;
   padding: 26px 18px 120px;
   min-height: calc(100vh - 100px);
+  min-height: calc(100dvh - 100px);
   overflow-y: auto;
 }
 
@@ -579,6 +588,7 @@ body {
   align-items: center;
   padding: 0 22px;
   gap: 8px;
+  margin-top: 0 !important;
 }
 
 .topo-cracha-texto {
@@ -590,6 +600,7 @@ body {
 
 .cracha-scroll {
   min-height: calc(100vh - 94px);
+  min-height: calc(100dvh - 94px);
   overflow-y: auto;
 }
 
@@ -707,6 +718,7 @@ body {
   justify-content: center;
   position: relative;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  margin-top: 0 !important;
 }
 
 .topo-validacao-titulo {
@@ -734,6 +746,7 @@ body {
 
 .validacao-scroll {
   min-height: calc(100vh - 82px);
+  min-height: calc(100dvh - 82px);
   overflow-y: auto;
 }
 
@@ -817,21 +830,27 @@ body {
   html, body {
     width: 100%;
     min-height: 100%;
-    background: #ffffff;
+    background: #e5e5e5;
   }
 
   body {
     min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .app-screen {
     width: 100%;
     min-height: 100vh;
+    min-height: 100dvh;
     border: none;
     border-radius: 0;
     box-shadow: none;
     max-width: none;
     max-height: none;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 
   .bottom-area {
