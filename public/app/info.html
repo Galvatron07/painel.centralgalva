@@ -2,158 +2,241 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Informações do Condutor</title>
   <link rel="stylesheet" href="css/app.css">
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#072768">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Carteira Digital">
+
+  <link rel="icon" type="image/png" href="img/icone-192.png">
+  <link rel="apple-touch-icon" href="img/icone-192.png">
 
   <style>
-    html, body {
-      overflow: hidden;
-      height: 100%;
+    *{
+      box-sizing:border-box;
     }
 
-    .app-screen.tela-info {
-      min-height: 100vh;
-      height: 100vh;
-      overflow: hidden;
+    html, body{
+      margin:0;
+      padding:0;
+      width:100%;
+      min-height:100%;
+      background:#eef0f3;
+      overflow:hidden;
     }
 
-    .topo-home.topo-condutor {
-      padding-top: 10px;
-      padding-bottom: 8px;
+    body{
+      min-height:100vh;
+      min-height:100dvh;
     }
 
-    .topo-condutor-titulo {
-      font-size: 15px;
+    .app-screen.tela-info{
+      min-height:100vh;
+      min-height:100dvh;
+      height:100vh;
+      height:100dvh;
+      overflow:hidden;
+      background:#eef0f3;
+      position:relative;
     }
 
-    .avatar-home {
-      transform: scale(0.96);
-      transform-origin: center;
+    .topo-home.topo-condutor{
+      height:auto;
+      min-height:100px;
+      background:#072768;
+      border-bottom-left-radius:26px;
+      border-bottom-right-radius:26px;
+      box-shadow:0 10px 24px rgba(0,0,0,0.18);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:
+        calc(env(safe-area-inset-top, 0px) + 12px)
+        22px
+        18px;
+      margin-top:calc(env(safe-area-inset-top, 0px) * -1);
+      position:relative;
+      z-index:3;
     }
 
-    .info-conteudo {
-      height: calc(100vh - 66px);
-      overflow: hidden;
-      padding: 10px 14px 8px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 10px;
-      box-sizing: border-box;
+    .topo-condutor-titulo{
+      position:static;
+      transform:none;
+      margin-left:4px;
+      color:#ffffff;
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:0.5px;
+      z-index:2;
+      flex:1;
+      text-align:left;
     }
 
-    .info-card.info-card-condutor {
-      padding: 20px 18px 18px;
-      border-radius: 18px;
-      flex: 0 0 auto;
+    .avatar-home{
+      transform:scale(0.96);
+      transform-origin:center;
     }
 
-    .info-card-topo {
-      margin-bottom: 9px;
+    .info-fundo-png{
+      position:absolute;
+      left:0;
+      right:0;
+      top:100px;
+      bottom:0;
+      background-image:url("img/fundo-info.png");
+      background-size:cover;
+      background-repeat:no-repeat;
+      background-position:center top;
+      z-index:1;
     }
 
-    .info-card-titulo {
-      font-size: 19px;
-      line-height: 1.1;
+    .info-conteudo{
+      position:relative;
+      z-index:2;
+      height:calc(100vh - 100px);
+      height:calc(100dvh - 100px);
+      overflow:hidden;
+      padding:10px 14px 8px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap:10px;
     }
 
-    .info-selo {
-      width: 46px;
-      max-width: 46px;
+    .info-card.info-card-condutor{
+      padding:20px 18px 18px;
+      border-radius:18px;
+      flex:0 0 auto;
+      background:rgba(255,255,255,0.96);
+      box-shadow:0 14px 30px rgba(0,0,0,0.08);
     }
 
-    .info-linha-separador {
-      margin: 8px 0 12px;
+    .info-card-topo{
+      margin-bottom:9px;
     }
 
-    .info-grupo.info-grupo-nome {
-      margin-bottom: 12px;
+    .info-card-titulo{
+      font-size:19px;
+      line-height:1.1;
     }
 
-    .info-label {
-      font-size: 11px;
-      line-height: 1.1;
+    .info-selo{
+      width:46px;
+      max-width:46px;
     }
 
-    .info-valor {
-      font-size: 13px;
-      line-height: 1.2;
+    .info-linha-separador{
+      margin:8px 0 12px;
+    }
+
+    .info-grupo.info-grupo-nome{
+      margin-bottom:12px;
+    }
+
+    .info-label{
+      font-size:11px;
+      line-height:1.1;
+    }
+
+    .info-valor{
+      font-size:13px;
+      line-height:1.2;
     }
 
     .info-grupo-nome .info-valor,
-    #infoNome {
-      font-size: 14px;
+    #infoNome{
+      font-size:14px;
     }
 
-    .info-grid {
-      gap: 11px 10px;
+    .info-grid{
+      gap:11px 10px;
     }
 
-    .info-item {
-      min-height: unset;
+    .info-item{
+      min-height:unset;
     }
 
-    .info-botoes-grid {
-      gap: 8px;
-      margin-top: 0;
-      transform: translateY(10px);
-      flex: 0 0 auto;
+    .info-botoes-grid{
+      gap:8px;
+      margin-top:0;
+      transform:translateY(10px);
+      flex:0 0 auto;
     }
 
-    .info-botao {
-      transform: scale(0.95);
-      transform-origin: center;
+    .info-botao{
+      transform:scale(0.95);
+      transform-origin:center;
     }
 
-    .info-botao-largo {
-      transform: scale(0.95);
+    .info-botao-largo{
+      transform:scale(0.95);
     }
 
-    @media (max-width: 390px) {
-      .info-conteudo {
-        height: calc(100vh - 64px);
-        padding: 8px 12px 6px;
-        gap: 9px;
+    @media (max-width:390px){
+      .topo-home.topo-condutor{
+        padding:
+          calc(env(safe-area-inset-top, 0px) + 10px)
+          16px
+          16px;
       }
 
-      .info-card.info-card-condutor {
-        padding: 17px 15px 15px;
+      .topo-condutor-titulo{
+        font-size:16px;
       }
 
-      .info-card-titulo {
-        font-size: 18px;
+      .info-fundo-png{
+        top:96px;
       }
 
-      .info-label {
-        font-size: 10px;
+      .info-conteudo{
+        height:calc(100vh - 96px);
+        height:calc(100dvh - 96px);
+        padding:8px 12px 6px;
+        gap:9px;
       }
 
-      .info-valor {
-        font-size: 12px;
+      .info-card.info-card-condutor{
+        padding:17px 15px 15px;
+      }
+
+      .info-card-titulo{
+        font-size:18px;
+      }
+
+      .info-label{
+        font-size:10px;
+      }
+
+      .info-valor{
+        font-size:12px;
       }
 
       .info-grupo-nome .info-valor,
-      #infoNome {
-        font-size: 13px;
+      #infoNome{
+        font-size:13px;
       }
 
-      .info-grid {
-        gap: 9px 8px;
+      .info-grid{
+        gap:9px 8px;
       }
 
-      .info-botoes-grid {
-        gap: 7px;
-        transform: translateY(7px);
+      .info-botoes-grid{
+        gap:7px;
+        transform:translateY(7px);
       }
 
       .info-botao,
-      .info-botao-largo {
-        transform: scale(0.93);
+      .info-botao-largo{
+        transform:scale(0.93);
       }
 
-      .avatar-home {
-        transform: scale(0.93);
+      .avatar-home{
+        transform:scale(0.93);
       }
     }
   </style>

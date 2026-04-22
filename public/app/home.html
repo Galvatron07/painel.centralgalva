@@ -8,18 +8,195 @@
   <link rel="stylesheet" href="css/app.css">
   <link rel="manifest" href="manifest.json">
 
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#072768">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Carteira Digital">
 
   <link rel="icon" type="image/png" href="img/icone-192.png">
   <link rel="apple-touch-icon" href="img/icone-192.png">
 
   <style>
+    *{
+      box-sizing:border-box;
+    }
+
+    html, body{
+      margin:0;
+      padding:0;
+      width:100%;
+      min-height:100%;
+      background:#efefef;
+      overflow-x:hidden;
+    }
+
+    body{
+      min-height:100vh;
+      min-height:100dvh;
+    }
+
+    .app-screen.tela-home{
+      background:#efefef;
+      min-height:100vh;
+      min-height:100dvh;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .topo-home{
+      height:auto;
+      min-height:100px;
+      background:#072768;
+      border-bottom-left-radius:26px;
+      border-bottom-right-radius:26px;
+      box-shadow:0 10px 24px rgba(0, 0, 0, 0.18);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:
+        calc(env(safe-area-inset-top, 0px) + 12px)
+        22px
+        18px;
+      margin-top:calc(env(safe-area-inset-top, 0px) * -1);
+      position:relative;
+      z-index:3;
+    }
+
+    .menu-home{
+      width:36px;
+      height:36px;
+      background:transparent;
+      border:none;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:6px;
+      cursor:default;
+      z-index:3;
+      flex-shrink:0;
+      padding:0;
+    }
+
+    .menu-home span{
+      display:block;
+      width:32px;
+      height:4px;
+      border-radius:999px;
+      background:#ffffff;
+    }
+
+    .topo-home-direita{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:18px;
+      z-index:3;
+      margin-left:auto;
+    }
+
     .sino-home{
+      background:transparent;
+      border:none;
+      font-size:28px;
       color:#ffffff !important;
+      cursor:default;
+      line-height:1;
+      padding:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-shadow:none;
+      filter:none;
+      -webkit-text-fill-color:#ffffff;
+      opacity:1 !important;
+    }
+
+    .sino-home svg{
+      width:28px;
+      height:28px;
+      fill:#ffffff;
+      display:block;
+    }
+
+    .avatar-home{
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      border:2px solid #ffffff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#ffffff;
+      font-size:34px;
+      font-weight:400;
+      flex-shrink:0;
+    }
+
+    .home-conteudo{
+      position:relative;
+      z-index:2;
+      padding:22px 20px 0;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .home-botao{
+      width:100%;
+      border:none;
+      background:transparent;
+      padding:0;
+      cursor:pointer;
+      border-radius:12px;
+      overflow:hidden;
+    }
+
+    .home-botao img{
+      width:100%;
+      display:block;
+      border-radius:12px;
+    }
+
+    .home-fundo-png{
+      position:absolute;
+      left:0;
+      right:0;
+      top:100px;
+      bottom:0;
+      background-image:url("img/fundo-home.png");
+      background-size:cover;
+      background-repeat:no-repeat;
+      background-position:center top;
+      z-index:1;
+    }
+
+    @media (max-width:420px){
+      .topo-home{
+        padding:
+          calc(env(safe-area-inset-top, 0px) + 10px)
+          16px
+          16px;
+      }
+
+      .topo-home-direita{
+        gap:14px;
+      }
+
+      .sino-home{
+        font-size:28px;
+      }
+
+      .avatar-home{
+        width:58px;
+        height:58px;
+        font-size:30px;
+      }
+
+      .home-conteudo{
+        padding:18px 16px 0;
+        gap:16px;
+      }
     }
   </style>
 </head>

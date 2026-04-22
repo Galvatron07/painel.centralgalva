@@ -8,14 +8,104 @@
   <link rel="stylesheet" href="css/app.css">
   <link rel="manifest" href="manifest.json">
 
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#012060">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Carteira Digital">
 
   <link rel="icon" type="image/png" href="img/icone-192.png">
   <link rel="apple-touch-icon" href="img/icone-192.png">
+
+  <style>
+    *{
+      box-sizing:border-box;
+    }
+
+    html, body{
+      margin:0;
+      padding:0;
+      width:100%;
+      min-height:100%;
+      background:#efefef;
+      overflow-x:hidden;
+    }
+
+    body{
+      min-height:100vh;
+      min-height:100dvh;
+    }
+
+    .app-screen.tela-senha{
+      background:#efefef;
+      min-height:100vh;
+      min-height:100dvh;
+    }
+
+    .topo-app{
+      height:auto;
+      min-height:80px;
+      background:#012060;
+      border-bottom-left-radius:32px;
+      border-bottom-right-radius:32px;
+      display:flex;
+      align-items:center;
+      padding:
+        calc(env(safe-area-inset-top, 0px) + 10px)
+        18px
+        16px;
+      position:relative;
+      box-shadow:0 8px 24px rgba(0, 0, 0, 0.14);
+      margin-top:calc(env(safe-area-inset-top, 0px) * -1);
+    }
+
+    .btn-voltar{
+      width:44px;
+      height:44px;
+      border:none;
+      border-radius:50%;
+      background:rgba(255,255,255,0.12);
+      color:#fff;
+      font-size:20px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .topo-titulo{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:0.4px;
+      white-space:nowrap;
+    }
+
+    .senha-wrapper{
+      padding:20px 20px 24px;
+    }
+
+    @media (max-width:420px){
+      .topo-app{
+        padding:
+          calc(env(safe-area-inset-top, 0px) + 8px)
+          16px
+          14px;
+      }
+
+      .topo-titulo{
+        font-size:15px;
+      }
+
+      .senha-wrapper{
+        padding:16px 16px 24px;
+      }
+    }
+  </style>
 </head>
 <body>
 
