@@ -1178,28 +1178,36 @@ app.get("/api/me", authUsuarioOuAdmin, rateLimit(), (req, res) => {
 
 app.post("/api/cadastro", rateLimit({ janelaMs: 60000, limite: 8 }), (req, res) => {
   try {
-    let { email, senha } = req.body
+    let { usuario, email, senha } = req.body
 
-    email = normalizarUsuario(email)
+    let usuarioFinal = normalizarUsuario(usuario || email)
     senha = String(senha || "").trim().slice(0, 120)
 
-    if (!email || !senha) {
-      return res.status(400).json({ erro: "Preencha email e senha" })
+    if (!usuarioFinal || !senha) {
+      return res.status(400).json({ erro: "Preencha usuário e senha" })
     }
 
-    if (!emailValido(email)) {
-      return res.status(400).json({ erro: "Email inválido" })
+    if (usuarioFinal.length < 3) {
+      return res.status(400).json({ erro: "O usuário deve ter no mínimo 3 caracteres" })
+    }
+
+    if (usuarioFinal.length > 40) {
+      return res.status(400).json({ erro: "O usuário deve ter no máximo 40 caracteres" })
+    }
+
+    if (!/^[a-z0-9._-]+$/i.test(usuarioFinal)) {
+      return res.status(400).json({ erro: "Usuário inválido. Use apenas letras, números, ponto, traço ou underline" })
     }
 
     let usuarios = ler(usuariosFile)
-    let existe = usuarios.find(u => normalizarUsuario(u.usuario) === email)
+    let existe = usuarios.find(u => normalizarUsuario(u.usuario) === usuarioFinal)
 
     if (existe) {
       return res.status(400).json({ erro: "Esse usuário já está cadastrado" })
     }
 
     let novoUsuario = {
-      usuario: email,
+      usuario: usuarioFinal,
       senha: senha,
       saldo: 0,
       documentos: 0,
@@ -1216,6 +1224,7 @@ app.post("/api/cadastro", rateLimit({ janelaMs: 60000, limite: 8 }), (req, res) 
       mensagem: "Cadastro realizado com sucesso. Aguarde a ativação pelo administrador."
     })
   } catch (error) {
+    console.error(error)
     return res.status(500).json({ erro: "Erro ao criar cadastro" })
   }
 })
